@@ -5,13 +5,14 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "echo '[CLIENT]' && run-s -l test:*",
+    "test:ts": "tsc --noEmit",
+    "test:eslint": "eslint ./src --ext .ts,.tsx",
+    "test:prettier": "prettier '{src,queries}/**/*.{css,ts,tsx,graphql}' -l",
+    "prettier": "prettier '{src,queries}/**/*.{css,ts,tsx,graphql}' --write",
+    "jest": "react-scripts test"
   },
   "dependencies": {
-    "@types/node": "11.13.8",
-    "@types/react": "16.8.14",
-    "@types/react-dom": "16.8.4",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
     "apollo-link": "^1.2.11",
@@ -23,9 +24,16 @@
     "graphql-tag": "^2.10.1",
     "react": "^16.8.6",
     "react-apollo": "^2.5.5",
+    "react-apollo-hooks": "^0.4.5",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0",
     "subscriptions-transport-ws": "^0.9.16"
+  },
+  "devDependencies": {
+    "@types/node": "11.13.8",
+    "@types/react": "16.8.14",
+    "@types/react-dom": "16.8.4",
+    "@types/graphql": "^14.2.0"
   },
   "browserslist": {
     "production": [

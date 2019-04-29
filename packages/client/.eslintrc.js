@@ -13,6 +13,7 @@ module.exports = {
       modules: true
     }
   },
+  settings: { react: { version: "detect" } },
   plugins: ["react", "react-hooks"],
   extends: [
     "eslint:recommended",

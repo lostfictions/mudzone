@@ -10,10 +10,7 @@
     ],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    // "preserveConstEnums": true,
-    // "removeComments": false,
-    "skipLibCheck": true,
     "sourceMap": true
   },
-  "include": ["index.ts"]
+  "include": ["src/**/*", "generate-schema.ts"]
 }

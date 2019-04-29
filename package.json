@@ -4,7 +4,8 @@
     "start": "env $(grep -v '^#' .env.dev | xargs) run-p -l start:*",
     "start:server": "yarn workspace mudzone-server start",
     "start:client": "yarn workspace mudzone-client start",
-    "gen": "ts-node packages/server/generate-schema.ts"
+    "gen": "ts-node packages/server/generate-schema.ts",
+    "test": "yarn workspaces run test"
   },
   "workspaces": [
     "packages/*"
