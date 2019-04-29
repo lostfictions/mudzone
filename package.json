@@ -2,8 +2,9 @@
   "private": true,
   "scripts": {
     "start": "env $(grep -v '^#' .env.dev | xargs) run-p -l start:*",
-    "start:server": "cd packages/server && yarn start",
-    "start:client": "cd packages/client && yarn start"
+    "start:server": "yarn workspace mudzone-server start",
+    "start:client": "yarn workspace mudzone-client start",
+    "gen": "ts-node packages/server/generate-schema.ts"
   },
   "workspaces": [
     "packages/*"

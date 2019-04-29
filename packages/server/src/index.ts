@@ -1,6 +1,7 @@
-import { ApolloServer, gql, PubSub } from "apollo-server";
+import { ApolloServer, PubSub } from "apollo-server";
 
 import { HOSTNAME, PORT } from "./env";
+import typeDefs from "./typedefs";
 
 const pubsub = new PubSub();
 
@@ -9,21 +10,6 @@ const BOOPED = "BOOPED";
 setInterval(() => {
   pubsub.publish(BOOPED, { booped: `server: ${Date.now()}` });
 }, 5000);
-
-const typeDefs = gql`
-  type Subscription {
-    booped: String
-  }
-
-  type Mutation {
-    sendMessage(author: String, message: String): String
-  }
-
-  type Query {
-    "A simple type for getting started!"
-    hello: String
-  }
-`;
 
 // A map of functions which return data for the schema.
 const resolvers = {
