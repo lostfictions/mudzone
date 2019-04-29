@@ -14,22 +14,69 @@ export enum CacheControlScope {
   Private = "PRIVATE"
 }
 
+export enum Direction {
+  Up = "UP",
+  Down = "DOWN",
+  Left = "LEFT",
+  Right = "RIGHT"
+}
+
+export type Entity = {
+  id: Scalars["String"];
+  appearance: Scalars["String"];
+  color: Scalars["String"];
+  position: Position;
+};
+
+export type Message = {
+  channel: Scalars["String"];
+  author: Scalars["String"];
+  text: Scalars["String"];
+};
+
 export type Mutation = {
-  sendMessage: Maybe<Scalars["String"]>;
+  move: Maybe<Position>;
+  sendMessage: Maybe<Message>;
+};
+
+export type MutationMoveArgs = {
+  direction: Direction;
 };
 
 export type MutationSendMessageArgs = {
-  author: Maybe<Scalars["String"]>;
-  message: Maybe<Scalars["String"]>;
+  channel: Scalars["String"];
+  message: Scalars["String"];
+};
+
+export type Position = {
+  x: Scalars["Int"];
+  y: Scalars["Int"];
 };
 
 export type Query = {
-  /** A simple type for getting started! */
-  hello: Maybe<Scalars["String"]>;
+  room: Maybe<Room>;
+};
+
+export type QueryRoomArgs = {
+  id: Scalars["String"];
+};
+
+export type Room = {
+  width: Scalars["Int"];
+  height: Scalars["Int"];
 };
 
 export type Subscription = {
-  booped: Maybe<Scalars["String"]>;
+  entityChanged: Entity;
+  messageReceived: Message;
+};
+
+export type SubscriptionEntityChangedArgs = {
+  id: Scalars["String"];
+};
+
+export type SubscriptionMessageReceivedArgs = {
+  channel: Maybe<Scalars["String"]>;
 };
 
 import {
@@ -111,12 +158,17 @@ export type DirectiveResolverFn<
 export type ResolversTypes = {
   Query: {};
   String: Scalars["String"];
+  Room: Room;
+  Int: Scalars["Int"];
   Mutation: {};
+  Direction: Direction;
+  Position: Position;
+  Message: Message;
   Subscription: {};
+  Entity: Entity;
   Boolean: Scalars["Boolean"];
   CacheControlScope: CacheControlScope;
   Upload: Scalars["Upload"];
-  Int: Scalars["Int"];
 };
 
 export type CacheControlDirectiveResolver<
@@ -129,33 +181,86 @@ export type CacheControlDirectiveResolver<
   }
 > = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
+export type EntityResolvers<
+  ContextType = any,
+  ParentType = ResolversTypes["Entity"]
+> = {
+  id: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  appearance: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  color: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  position: Resolver<ResolversTypes["Position"], ParentType, ContextType>;
+};
+
+export type MessageResolvers<
+  ContextType = any,
+  ParentType = ResolversTypes["Message"]
+> = {
+  channel: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  author: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  text: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+};
+
 export type MutationResolvers<
   ContextType = any,
   ParentType = ResolversTypes["Mutation"]
 > = {
+  move: Resolver<
+    Maybe<ResolversTypes["Position"]>,
+    ParentType,
+    ContextType,
+    MutationMoveArgs
+  >;
   sendMessage: Resolver<
-    Maybe<ResolversTypes["String"]>,
+    Maybe<ResolversTypes["Message"]>,
     ParentType,
     ContextType,
     MutationSendMessageArgs
   >;
 };
 
+export type PositionResolvers<
+  ContextType = any,
+  ParentType = ResolversTypes["Position"]
+> = {
+  x: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  y: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+};
+
 export type QueryResolvers<
   ContextType = any,
   ParentType = ResolversTypes["Query"]
 > = {
-  hello: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  room: Resolver<
+    Maybe<ResolversTypes["Room"]>,
+    ParentType,
+    ContextType,
+    QueryRoomArgs
+  >;
+};
+
+export type RoomResolvers<
+  ContextType = any,
+  ParentType = ResolversTypes["Room"]
+> = {
+  width: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  height: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<
   ContextType = any,
   ParentType = ResolversTypes["Subscription"]
 > = {
-  booped: SubscriptionResolver<
-    Maybe<ResolversTypes["String"]>,
+  entityChanged: SubscriptionResolver<
+    ResolversTypes["Entity"],
     ParentType,
-    ContextType
+    ContextType,
+    SubscriptionEntityChangedArgs
+  >;
+  messageReceived: SubscriptionResolver<
+    ResolversTypes["Message"],
+    ParentType,
+    ContextType,
+    SubscriptionMessageReceivedArgs
   >;
 };
 
@@ -165,8 +270,12 @@ export interface UploadScalarConfig
 }
 
 export type Resolvers<ContextType = any> = {
+  Entity: EntityResolvers<ContextType>;
+  Message: MessageResolvers<ContextType>;
   Mutation: MutationResolvers<ContextType>;
+  Position: PositionResolvers<ContextType>;
   Query: QueryResolvers<ContextType>;
+  Room: RoomResolvers<ContextType>;
   Subscription: SubscriptionResolvers<ContextType>;
   Upload: GraphQLScalarType;
 };

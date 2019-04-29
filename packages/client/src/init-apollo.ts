@@ -1,19 +1,19 @@
 import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import { ApolloLink, split } from "apollo-link";
-import { HttpLink } from "apollo-link-http";
+import { ApolloLink /* split */ } from "apollo-link";
+// import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
 import { WebSocketLink } from "apollo-link-ws";
-import { getMainDefinition } from "apollo-utilities";
+// import { getMainDefinition } from "apollo-utilities";
 
 const HOST = `${process.env.REACT_APP_API_HOSTNAME}:${
   process.env.REACT_APP_API_PORT
 }`;
 
 export function makeClient() {
-  const httpLink = new HttpLink({
-    uri: `http://${HOST}`
-  });
+  // const httpLink = new HttpLink({
+  //   uri: `http://${HOST}`
+  // });
 
   const wsLink = new WebSocketLink({
     uri: `ws://${HOST}/graphql`,
@@ -22,17 +22,19 @@ export function makeClient() {
     }
   });
 
-  const link = split(
-    // split based on operation type
-    ({ query }) => {
-      const def = getMainDefinition(query);
-      return (
-        def.kind === "OperationDefinition" && def.operation === "subscription"
-      );
-    },
-    wsLink,
-    httpLink
-  );
+  const link = wsLink;
+
+  // const link = split(
+  //   // split based on operation type
+  //   ({ query }) => {
+  //     const def = getMainDefinition(query);
+  //     return (
+  //       def.kind === "OperationDefinition" && def.operation === "subscription"
+  //     );
+  //   },
+  //   wsLink,
+  //   httpLink
+  // );
 
   const client = new ApolloClient({
     link: ApolloLink.from([
