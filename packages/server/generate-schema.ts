@@ -20,18 +20,25 @@ mockServer.listen().then(async ({ url, server }) => {
       }
     });
 
-    child.stdout.on("data", data => {
+    child.stdout!.on("data", data => {
       process.stdout.write(data);
     });
 
-    child.stderr.on("data", data => {
+    child.stderr!.on("data", data => {
       process.stdout.write(data);
     });
 
     child.on("exit", res);
   });
 
-  console.log("Done.");
+  console.log("Closing server....");
 
-  server.close();
+  await new Promise((res, rej) =>
+    server.close(err => {
+      if (err) rej(err);
+      else res();
+    })
+  );
+
+  console.log("Done.");
 });

@@ -1,18 +1,24 @@
 overwrite: true
 schema: "${URL}"
-# documents: "**/*.graphql"
 generates:
-  # packages/client/src/generated/graphql.ts:
-  #   plugins:
-  #     - "typescript"
-  #     - "typescript-operations"
-  #     - "typescript-react-apollo"
-  #   config:
-  #     withHooks: true
+  packages/client/src/generated/models.tsx:
+    documents: "packages/client/queries/**/*.graphql"
+    plugins:
+      - add: "/* eslint-disable */"
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+    config:
+      noGraphQLTag: true
+      withHOC: false
+      withComponent: false
+      withHooks: true
   packages/server/src/generated/graphql.ts:
     plugins:
       - "typescript"
       - "typescript-resolvers"
+    config:
+      avoidOptionals: true
   # ./graphql.schema.json:
   #   plugins:
   #     - "introspection"

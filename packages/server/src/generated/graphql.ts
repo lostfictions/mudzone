@@ -15,21 +15,21 @@ export enum CacheControlScope {
 }
 
 export type Mutation = {
-  sendMessage?: Maybe<Scalars["String"]>;
+  sendMessage: Maybe<Scalars["String"]>;
 };
 
 export type MutationSendMessageArgs = {
-  author?: Maybe<Scalars["String"]>;
-  message?: Maybe<Scalars["String"]>;
+  author: Maybe<Scalars["String"]>;
+  message: Maybe<Scalars["String"]>;
 };
 
 export type Query = {
   /** A simple type for getting started! */
-  hello?: Maybe<Scalars["String"]>;
+  hello: Maybe<Scalars["String"]>;
 };
 
 export type Subscription = {
-  booped?: Maybe<Scalars["String"]>;
+  booped: Maybe<Scalars["String"]>;
 };
 
 import {
@@ -124,8 +124,8 @@ export type CacheControlDirectiveResolver<
   Parent,
   ContextType = any,
   Args = {
-    maxAge?: Maybe<Maybe<Scalars["Int"]>>;
-    scope?: Maybe<Maybe<CacheControlScope>>;
+    maxAge: Maybe<Maybe<Scalars["Int"]>>;
+    scope: Maybe<Maybe<CacheControlScope>>;
   }
 > = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
@@ -133,7 +133,7 @@ export type MutationResolvers<
   ContextType = any,
   ParentType = ResolversTypes["Mutation"]
 > = {
-  sendMessage?: Resolver<
+  sendMessage: Resolver<
     Maybe<ResolversTypes["String"]>,
     ParentType,
     ContextType,
@@ -145,14 +145,14 @@ export type QueryResolvers<
   ContextType = any,
   ParentType = ResolversTypes["Query"]
 > = {
-  hello?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  hello: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<
   ContextType = any,
   ParentType = ResolversTypes["Subscription"]
 > = {
-  booped?: SubscriptionResolver<
+  booped: SubscriptionResolver<
     Maybe<ResolversTypes["String"]>,
     ParentType,
     ContextType
@@ -165,10 +165,10 @@ export interface UploadScalarConfig
 }
 
 export type Resolvers<ContextType = any> = {
-  Mutation?: MutationResolvers<ContextType>;
-  Query?: QueryResolvers<ContextType>;
-  Subscription?: SubscriptionResolvers<ContextType>;
-  Upload?: GraphQLScalarType;
+  Mutation: MutationResolvers<ContextType>;
+  Query: QueryResolvers<ContextType>;
+  Subscription: SubscriptionResolvers<ContextType>;
+  Upload: GraphQLScalarType;
 };
 
 /**
@@ -177,7 +177,7 @@ export type Resolvers<ContextType = any> = {
  */
 export type IResolvers<ContextType = any> = Resolvers<ContextType>;
 export type DirectiveResolvers<ContextType = any> = {
-  cacheControl?: CacheControlDirectiveResolver<any, any, ContextType>;
+  cacheControl: CacheControlDirectiveResolver<any, any, ContextType>;
 };
 
 /**

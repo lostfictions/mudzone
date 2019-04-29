@@ -25,8 +25,10 @@ export function makeClient() {
   const link = split(
     // split based on operation type
     ({ query }) => {
-      const { kind, operation } = getMainDefinition(query);
-      return kind === "OperationDefinition" && operation === "subscription";
+      const def = getMainDefinition(query);
+      return (
+        def.kind === "OperationDefinition" && def.operation === "subscription"
+      );
     },
     wsLink,
     httpLink

@@ -30,12 +30,13 @@ const resolvers: Resolvers = {
       pubsub.publish(BOOPED, { booped: msg });
       return msg;
     }
-  }
+  },
+  Upload: undefined as any
 };
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers: resolvers as any
 });
 
 server.listen(PORT, HOSTNAME).then(({ url, subscriptionsUrl }) => {
