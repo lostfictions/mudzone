@@ -1,10 +1,11 @@
 {
   "private": true,
   "scripts": {
-    "start": "env $(grep -v '^#' .env.dev | xargs) run-p -l start:*",
-    "start:server": "yarn workspace mudzone-server start",
-    "start:client": "yarn workspace mudzone-client start",
-    "gen": "ts-node packages/server/generate-schema.ts",
+    "start": "run-p -l start:*",
+    "start:client": "env $(grep -v '^#' .env.dev | xargs) yarn workspace mudzone-client start",
+    "start:server": "env $(grep -v '^#' .env.dev | xargs) yarn workspace mudzone-server start",
+    "gen-client": "ts-node -T packages/server/generate-schema.ts --client",
+    "gen-server": "ts-node -T packages/server/generate-schema.ts --server",
     "test": "yarn workspaces run test"
   },
   "workspaces": [

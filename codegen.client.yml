@@ -11,14 +11,5 @@ generates:
     config:
       noGraphQLTag: true
       withHOC: false
-      withComponent: false
+      # withComponent: false
       withHooks: true
-  packages/server/src/generated/graphql.ts:
-    plugins:
-      - "typescript"
-      - "typescript-resolvers"
-    config:
-      avoidOptionals: true
-  ./graphql.schema.json:
-    plugins:
-      - "introspection"
