@@ -5,14 +5,13 @@ generates:
   # packages/client/src/generated/graphql.ts:
   #   plugins:
   #     - "typescript"
-  #     # - "typescript-operations"
+  #     - "typescript-operations"
   #     - "typescript-react-apollo"
-  # config:
-  # withHooks: true
+  #   config:
+  #     withHooks: true
   packages/server/src/generated/graphql.ts:
     plugins:
       - "typescript"
-      # - "typescript-operations"
       - "typescript-resolvers"
   # ./graphql.schema.json:
   #   plugins:

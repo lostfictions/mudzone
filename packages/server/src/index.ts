@@ -2,6 +2,7 @@ import { ApolloServer, PubSub } from "apollo-server";
 
 import { HOSTNAME, PORT } from "./env";
 import typeDefs from "./typedefs";
+import { Resolvers } from "./generated/graphql";
 
 const pubsub = new PubSub();
 
@@ -12,7 +13,7 @@ setInterval(() => {
 }, 5000);
 
 // A map of functions which return data for the schema.
-const resolvers = {
+const resolvers: Resolvers = {
   Subscription: {
     booped: {
       // Additional event labels can be passed to asyncIterator creation
@@ -23,7 +24,7 @@ const resolvers = {
     hello: () => "world"
   },
   Mutation: {
-    sendMessage(_root: any, { author, message }: any, _context: any) {
+    sendMessage(_root, { author, message }, _context) {
       const msg = `${author}: ${message}`;
       console.log(msg);
       pubsub.publish(BOOPED, { booped: msg });
