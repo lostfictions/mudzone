@@ -1,0 +1,8 @@
+subscription EntityChanged($id: String!) {
+  entityChanged(id: $id) {
+    position {
+      x
+      y
+    }
+  }
+}

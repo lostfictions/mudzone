@@ -1,0 +1,6 @@
+mutation Move($direction: Direction!) {
+  move(direction: $direction) {
+    x
+    y
+  }
+}

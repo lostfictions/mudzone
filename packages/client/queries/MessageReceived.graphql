@@ -1,0 +1,6 @@
+subscription MessageReceived($channel: String!) {
+  messageReceived(channel: $channel) {
+    author
+    text
+  }
+}
