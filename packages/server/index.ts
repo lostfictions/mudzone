@@ -1,5 +1,7 @@
 import { ApolloServer, gql, PubSub } from "apollo-server";
 
+import { HOSTNAME, PORT } from "./env";
+
 const pubsub = new PubSub();
 
 const BOOPED = "BOOPED";
@@ -49,7 +51,7 @@ const server = new ApolloServer({
   resolvers
 });
 
-server.listen().then(({ url, subscriptionsUrl }) => {
+server.listen(PORT, HOSTNAME).then(({ url, subscriptionsUrl }) => {
   console.log(`🚀 Server ready at ${url}!`);
   console.log(`🚀 Subscriptions available at ${subscriptionsUrl}!`);
 });

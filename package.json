@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "start": "run-p -l start:*",
+    "start": "env $(grep -v '^#' .env.dev | xargs) run-p -l start:*",
     "start:server": "cd packages/server && yarn start",
     "start:client": "cd packages/client && yarn start"
   },
