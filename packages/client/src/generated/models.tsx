@@ -69,8 +69,8 @@ export type Room = {
 };
 
 export type Subscription = {
-  entityChanged?: Maybe<Entity>;
-  messageReceived?: Maybe<Message>;
+  entityChanged: Entity;
+  messageReceived: Message;
 };
 
 export type SubscriptionEntityChangedArgs = {
@@ -86,11 +86,9 @@ export type EntityChangedSubscriptionVariables = {
 };
 
 export type EntityChangedSubscription = { __typename?: "Subscription" } & {
-  entityChanged: Maybe<
-    { __typename?: "Entity" } & {
+  entityChanged: { __typename?: "Entity" } & Pick<Entity, "id"> & {
       position: { __typename?: "Position" } & Pick<Position, "x" | "y">;
-    }
-  >;
+    };
 };
 
 export type MessageReceivedSubscriptionVariables = {
@@ -98,8 +96,9 @@ export type MessageReceivedSubscriptionVariables = {
 };
 
 export type MessageReceivedSubscription = { __typename?: "Subscription" } & {
-  messageReceived: Maybe<
-    { __typename?: "Message" } & Pick<Message, "author" | "text">
+  messageReceived: { __typename?: "Message" } & Pick<
+    Message,
+    "author" | "text"
   >;
 };
 
@@ -161,6 +160,12 @@ export const EntityChangedDocument: DocumentNode = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "id" },
+                  arguments: [],
+                  directives: []
+                },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "position" },

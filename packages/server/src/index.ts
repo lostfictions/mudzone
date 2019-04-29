@@ -107,14 +107,25 @@ setInterval(() => {
 
   /* eslint-disable no-fallthrough */
   switch (true) {
-    case direction < 0.25 && x < room.width:
-      deltaX = 1;
-    case direction < 0.5 && y > 0:
-      deltaY = -1;
-    case direction < 0.75 && x > 0:
-      deltaX = -1;
-    case direction < 1 && y < room.height:
-      deltaY = 1;
+    case direction < 0.25:
+      if (x < room.width) {
+        deltaX = 1;
+        break;
+      }
+    case direction < 0.5:
+      if (y > 0) {
+        deltaY = -1;
+        break;
+      }
+    case direction < 0.75:
+      if (x > 0) {
+        deltaX = -1;
+        break;
+      }
+    case direction < 1:
+      if (y < room.height) {
+        deltaY = 1;
+      }
   }
   /* eslint-enable no-fallthrough */
 
@@ -128,7 +139,7 @@ setInterval(() => {
   };
 
   pubsub.publish(ENTITY_MOVE, entities.npc);
-}, 5000);
+}, 900);
 
 setInterval(() => {
   pubsub.publish(CHAT_MESSAGE, {
@@ -145,7 +156,11 @@ const resolvers: Resolvers = {
       subscribe: withFilter(
         () => pubsub.asyncIterator<Entity>(ENTITY_MOVE),
         (payload, variables) => payload.id === variables.id
-      )
+      ),
+      // i don't understand why this is necessary or why it doesn't typecheck
+      resolve(iteratorResult: any) {
+        return iteratorResult;
+      }
     },
     messageReceived: {
       subscribe: withFilter(
@@ -160,7 +175,7 @@ const resolvers: Resolvers = {
   },
   Query: {
     room(_parent, { id }, _context, _info) {
-      console.log(id);
+      console.log(id); // ignored
       return room;
     }
   },

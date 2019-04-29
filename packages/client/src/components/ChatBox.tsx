@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import {
   useMessageReceivedSubscription,
   useSendMessageMutation
-} from "./generated/models";
+} from "../generated/models";
 
 export default function ChatBox() {
   return (
