@@ -35,8 +35,8 @@ export type Message = {
 };
 
 export type Mutation = {
-  move: Maybe<Position>;
-  sendMessage: Maybe<Message>;
+  move?: Maybe<Position>;
+  sendMessage?: Maybe<Message>;
 };
 
 export type MutationMoveArgs = {
@@ -54,7 +54,7 @@ export type Position = {
 };
 
 export type Query = {
-  room: Maybe<Room>;
+  room?: Maybe<Room>;
 };
 
 export type QueryRoomArgs = {
@@ -76,8 +76,10 @@ export type SubscriptionEntityChangedArgs = {
 };
 
 export type SubscriptionMessageReceivedArgs = {
-  channel: Maybe<Scalars["String"]>;
+  channel?: Maybe<Scalars["String"]>;
 };
+
+import { ResolverContext } from "../types/ResolverContext";
 
 import {
   GraphQLResolveInfo,
@@ -174,43 +176,43 @@ export type ResolversTypes = {
 export type CacheControlDirectiveResolver<
   Result,
   Parent,
-  ContextType = any,
+  ContextType = ResolverContext,
   Args = {
-    maxAge: Maybe<Maybe<Scalars["Int"]>>;
-    scope: Maybe<Maybe<CacheControlScope>>;
+    maxAge?: Maybe<Maybe<Scalars["Int"]>>;
+    scope?: Maybe<Maybe<CacheControlScope>>;
   }
 > = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type EntityResolvers<
-  ContextType = any,
+  ContextType = ResolverContext,
   ParentType = ResolversTypes["Entity"]
 > = {
-  id: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  appearance: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  color: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  position: Resolver<ResolversTypes["Position"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  appearance?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  color?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  position?: Resolver<ResolversTypes["Position"], ParentType, ContextType>;
 };
 
 export type MessageResolvers<
-  ContextType = any,
+  ContextType = ResolverContext,
   ParentType = ResolversTypes["Message"]
 > = {
-  channel: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  author: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  text: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  channel?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  author?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 };
 
 export type MutationResolvers<
-  ContextType = any,
+  ContextType = ResolverContext,
   ParentType = ResolversTypes["Mutation"]
 > = {
-  move: Resolver<
+  move?: Resolver<
     Maybe<ResolversTypes["Position"]>,
     ParentType,
     ContextType,
     MutationMoveArgs
   >;
-  sendMessage: Resolver<
+  sendMessage?: Resolver<
     Maybe<ResolversTypes["Message"]>,
     ParentType,
     ContextType,
@@ -219,18 +221,18 @@ export type MutationResolvers<
 };
 
 export type PositionResolvers<
-  ContextType = any,
+  ContextType = ResolverContext,
   ParentType = ResolversTypes["Position"]
 > = {
-  x: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  y: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  x?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  y?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
 };
 
 export type QueryResolvers<
-  ContextType = any,
+  ContextType = ResolverContext,
   ParentType = ResolversTypes["Query"]
 > = {
-  room: Resolver<
+  room?: Resolver<
     Maybe<ResolversTypes["Room"]>,
     ParentType,
     ContextType,
@@ -239,24 +241,24 @@ export type QueryResolvers<
 };
 
 export type RoomResolvers<
-  ContextType = any,
+  ContextType = ResolverContext,
   ParentType = ResolversTypes["Room"]
 > = {
-  width: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  height: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  width?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  height?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<
-  ContextType = any,
+  ContextType = ResolverContext,
   ParentType = ResolversTypes["Subscription"]
 > = {
-  entityChanged: SubscriptionResolver<
+  entityChanged?: SubscriptionResolver<
     ResolversTypes["Entity"],
     ParentType,
     ContextType,
     SubscriptionEntityChangedArgs
   >;
-  messageReceived: SubscriptionResolver<
+  messageReceived?: SubscriptionResolver<
     ResolversTypes["Message"],
     ParentType,
     ContextType,
@@ -269,30 +271,30 @@ export interface UploadScalarConfig
   name: "Upload";
 }
 
-export type Resolvers<ContextType = any> = {
-  Entity: EntityResolvers<ContextType>;
-  Message: MessageResolvers<ContextType>;
-  Mutation: MutationResolvers<ContextType>;
-  Position: PositionResolvers<ContextType>;
-  Query: QueryResolvers<ContextType>;
-  Room: RoomResolvers<ContextType>;
-  Subscription: SubscriptionResolvers<ContextType>;
-  Upload: GraphQLScalarType;
+export type Resolvers<ContextType = ResolverContext> = {
+  Entity?: EntityResolvers<ContextType>;
+  Message?: MessageResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
+  Position?: PositionResolvers<ContextType>;
+  Query?: QueryResolvers<ContextType>;
+  Room?: RoomResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
+  Upload?: GraphQLScalarType;
 };
 
 /**
  * @deprecated
  * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
  */
-export type IResolvers<ContextType = any> = Resolvers<ContextType>;
-export type DirectiveResolvers<ContextType = any> = {
-  cacheControl: CacheControlDirectiveResolver<any, any, ContextType>;
+export type IResolvers<ContextType = ResolverContext> = Resolvers<ContextType>;
+export type DirectiveResolvers<ContextType = ResolverContext> = {
+  cacheControl?: CacheControlDirectiveResolver<any, any, ContextType>;
 };
 
 /**
  * @deprecated
  * Use "DirectiveResolvers" root object instead. If you wish to get "IDirectiveResolvers", add "typesPrefix: I" to your config.
  */
-export type IDirectiveResolvers<ContextType = any> = DirectiveResolvers<
-  ContextType
->;
+export type IDirectiveResolvers<
+  ContextType = ResolverContext
+> = DirectiveResolvers<ContextType>;

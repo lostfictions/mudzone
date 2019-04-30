@@ -6,7 +6,7 @@ generates:
       - "typescript"
       - "typescript-resolvers"
     config:
-      avoidOptionals: true
+      contextType: ../types/ResolverContext#ResolverContext
   ./graphql.schema.json:
     plugins:
       - "introspection"
