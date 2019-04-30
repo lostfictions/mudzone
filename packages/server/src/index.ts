@@ -271,6 +271,10 @@ const server = new ApolloServer({
     if ((connectionMetadata as any).connection) {
       return (connectionMetadata as any).connection.context;
     } else {
+      console.warn(
+        "Non-WS connection made to server!",
+        "Providing request as context, but this may cause issues."
+      );
       const { req } = connectionMetadata;
       return { req };
     }
