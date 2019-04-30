@@ -1,5 +1,7 @@
 subscription MessageReceived($channel: String!) {
   messageReceived(channel: $channel) {
+    id
+    time
     author
     text
   }

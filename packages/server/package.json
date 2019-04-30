@@ -13,7 +13,10 @@
     "prettier": "prettier 'src/**/*' --write"
   },
   "devDependencies": {
+    "@types/fs-extra": "^5.0.5",
     "@types/lodash.merge": "^4.6.6",
+    "@types/lokijs": "^1.5.2",
+    "@types/uuid": "^3.4.4",
     "ts-node": "^8.1.0",
     "ts-node-dev": "^1.0.0-pre.32"
   },
@@ -21,7 +24,10 @@
     "@okgrow/graphql-scalars": "^0.4.5",
     "apollo-server": "^2.4.8",
     "envalid": "^5.0.0",
+    "fs-extra": "^7.0.1",
     "graphql": "^14.2.1",
-    "lodash.merge": "^4.6.1"
+    "lodash.merge": "^4.6.1",
+    "lokijs": "^1.5.6",
+    "uuid": "^3.3.2"
   }
 }

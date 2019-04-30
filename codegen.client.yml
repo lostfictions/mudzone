@@ -9,7 +9,10 @@ generates:
       - "typescript-operations"
       - "typescript-react-apollo"
     config:
+      scalars:
+        DateTime: Date
       noGraphQLTag: true
       withHOC: false
-      # withComponent: false
       withHooks: true
+      # will yield type errors if not imported!
+      # withComponent: false

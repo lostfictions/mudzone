@@ -8,6 +8,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** Use JavaScript Date object for date/time fields. */
+  DateTime: Date;
+  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
@@ -25,29 +28,35 @@ export enum Direction {
 
 export type Entity = {
   id: Scalars["String"];
+  name: Scalars["String"];
+  description: Scalars["String"];
+  room: Room;
   appearance: Scalars["String"];
   color: Scalars["String"];
   position: Position;
 };
 
 export type Message = {
+  id: Scalars["Int"];
+  time: Scalars["DateTime"];
   channel: Scalars["String"];
   author: Scalars["String"];
   text: Scalars["String"];
 };
 
 export type Mutation = {
-  move?: Maybe<Position>;
+  _empty?: Maybe<Scalars["String"]>;
   sendMessage?: Maybe<Message>;
-};
-
-export type MutationMoveArgs = {
-  direction: Direction;
+  move?: Maybe<Position>;
 };
 
 export type MutationSendMessageArgs = {
   channel: Scalars["String"];
   message: Scalars["String"];
+};
+
+export type MutationMoveArgs = {
+  direction: Direction;
 };
 
 export type Position = {
@@ -56,7 +65,23 @@ export type Position = {
 };
 
 export type Query = {
+  _empty?: Maybe<Scalars["String"]>;
+  message?: Maybe<Message>;
+  messages?: Maybe<Array<Message>>;
+  entity?: Maybe<Entity>;
   room?: Maybe<Room>;
+};
+
+export type QueryMessageArgs = {
+  id: Scalars["String"];
+};
+
+export type QueryMessagesArgs = {
+  channel: Scalars["String"];
+};
+
+export type QueryEntityArgs = {
+  id: Scalars["String"];
 };
 
 export type QueryRoomArgs = {
@@ -64,21 +89,23 @@ export type QueryRoomArgs = {
 };
 
 export type Room = {
+  id: Scalars["String"];
   width: Scalars["Int"];
   height: Scalars["Int"];
 };
 
 export type Subscription = {
-  entityChanged: Entity;
+  _empty?: Maybe<Scalars["String"]>;
   messageReceived: Message;
-};
-
-export type SubscriptionEntityChangedArgs = {
-  id: Scalars["String"];
+  entityChanged: Entity;
 };
 
 export type SubscriptionMessageReceivedArgs = {
   channel?: Maybe<Scalars["String"]>;
+};
+
+export type SubscriptionEntityChangedArgs = {
+  id: Scalars["String"];
 };
 
 export type EntityChangedSubscriptionVariables = {
@@ -98,7 +125,7 @@ export type MessageReceivedSubscriptionVariables = {
 export type MessageReceivedSubscription = { __typename?: "Subscription" } & {
   messageReceived: { __typename?: "Message" } & Pick<
     Message,
-    "author" | "text"
+    "id" | "time" | "author" | "text"
   >;
 };
 
@@ -272,6 +299,18 @@ export const MessageReceivedDocument: DocumentNode = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "id" },
+                  arguments: [],
+                  directives: []
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "time" },
+                  arguments: [],
+                  directives: []
+                },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "author" },

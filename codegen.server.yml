@@ -6,7 +6,11 @@ generates:
       - "typescript"
       - "typescript-resolvers"
     config:
-      contextType: ../types/ResolverContext#ResolverContext
+      mappers:
+        Entity: ../types/db-types#EntityDbObject
+      scalars:
+        DateTime: Date
+      contextType: ../types/resolver-context#ResolverContext
   ./graphql.schema.json:
     plugins:
       - "introspection"

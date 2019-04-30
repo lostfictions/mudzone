@@ -6,6 +6,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: Date;
   Upload: any;
 };
 
@@ -23,29 +24,35 @@ export enum Direction {
 
 export type Entity = {
   id: Scalars["String"];
+  name: Scalars["String"];
+  description: Scalars["String"];
+  room: Room;
   appearance: Scalars["String"];
   color: Scalars["String"];
   position: Position;
 };
 
 export type Message = {
+  id: Scalars["Int"];
+  time: Scalars["DateTime"];
   channel: Scalars["String"];
   author: Scalars["String"];
   text: Scalars["String"];
 };
 
 export type Mutation = {
-  move?: Maybe<Position>;
+  _empty?: Maybe<Scalars["String"]>;
   sendMessage?: Maybe<Message>;
-};
-
-export type MutationMoveArgs = {
-  direction: Direction;
+  move?: Maybe<Position>;
 };
 
 export type MutationSendMessageArgs = {
   channel: Scalars["String"];
   message: Scalars["String"];
+};
+
+export type MutationMoveArgs = {
+  direction: Direction;
 };
 
 export type Position = {
@@ -54,7 +61,23 @@ export type Position = {
 };
 
 export type Query = {
+  _empty?: Maybe<Scalars["String"]>;
+  message?: Maybe<Message>;
+  messages?: Maybe<Array<Message>>;
+  entity?: Maybe<Entity>;
   room?: Maybe<Room>;
+};
+
+export type QueryMessageArgs = {
+  id: Scalars["String"];
+};
+
+export type QueryMessagesArgs = {
+  channel: Scalars["String"];
+};
+
+export type QueryEntityArgs = {
+  id: Scalars["String"];
 };
 
 export type QueryRoomArgs = {
@@ -62,24 +85,27 @@ export type QueryRoomArgs = {
 };
 
 export type Room = {
+  id: Scalars["String"];
   width: Scalars["Int"];
   height: Scalars["Int"];
 };
 
 export type Subscription = {
-  entityChanged: Entity;
+  _empty?: Maybe<Scalars["String"]>;
   messageReceived: Message;
-};
-
-export type SubscriptionEntityChangedArgs = {
-  id: Scalars["String"];
+  entityChanged: Entity;
 };
 
 export type SubscriptionMessageReceivedArgs = {
   channel?: Maybe<Scalars["String"]>;
 };
 
-import { ResolverContext } from "../types/ResolverContext";
+export type SubscriptionEntityChangedArgs = {
+  id: Scalars["String"];
+};
+
+import { EntityDbObject } from "../types/db-types";
+import { ResolverContext } from "../types/resolver-context";
 
 import {
   GraphQLResolveInfo,
@@ -160,14 +186,15 @@ export type DirectiveResolverFn<
 export type ResolversTypes = {
   Query: {};
   String: Scalars["String"];
-  Room: Room;
+  Message: Message;
   Int: Scalars["Int"];
+  DateTime: Scalars["DateTime"];
+  Entity: EntityDbObject;
+  Room: Room;
+  Position: Position;
   Mutation: {};
   Direction: Direction;
-  Position: Position;
-  Message: Message;
   Subscription: {};
-  Entity: Entity;
   Boolean: Scalars["Boolean"];
   CacheControlScope: CacheControlScope;
   Upload: Scalars["Upload"];
@@ -183,11 +210,19 @@ export type CacheControlDirectiveResolver<
   }
 > = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
+export interface DateTimeScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes["DateTime"], any> {
+  name: "DateTime";
+}
+
 export type EntityResolvers<
   ContextType = ResolverContext,
   ParentType = ResolversTypes["Entity"]
 > = {
   id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  room?: Resolver<ResolversTypes["Room"], ParentType, ContextType>;
   appearance?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   color?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   position?: Resolver<ResolversTypes["Position"], ParentType, ContextType>;
@@ -197,6 +232,8 @@ export type MessageResolvers<
   ContextType = ResolverContext,
   ParentType = ResolversTypes["Message"]
 > = {
+  id?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  time?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   channel?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   author?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   text?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
@@ -206,17 +243,18 @@ export type MutationResolvers<
   ContextType = ResolverContext,
   ParentType = ResolversTypes["Mutation"]
 > = {
-  move?: Resolver<
-    Maybe<ResolversTypes["Position"]>,
-    ParentType,
-    ContextType,
-    MutationMoveArgs
-  >;
+  _empty?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   sendMessage?: Resolver<
     Maybe<ResolversTypes["Message"]>,
     ParentType,
     ContextType,
     MutationSendMessageArgs
+  >;
+  move?: Resolver<
+    Maybe<ResolversTypes["Position"]>,
+    ParentType,
+    ContextType,
+    MutationMoveArgs
   >;
 };
 
@@ -232,6 +270,25 @@ export type QueryResolvers<
   ContextType = ResolverContext,
   ParentType = ResolversTypes["Query"]
 > = {
+  _empty?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  message?: Resolver<
+    Maybe<ResolversTypes["Message"]>,
+    ParentType,
+    ContextType,
+    QueryMessageArgs
+  >;
+  messages?: Resolver<
+    Maybe<Array<ResolversTypes["Message"]>>,
+    ParentType,
+    ContextType,
+    QueryMessagesArgs
+  >;
+  entity?: Resolver<
+    Maybe<ResolversTypes["Entity"]>,
+    ParentType,
+    ContextType,
+    QueryEntityArgs
+  >;
   room?: Resolver<
     Maybe<ResolversTypes["Room"]>,
     ParentType,
@@ -244,6 +301,7 @@ export type RoomResolvers<
   ContextType = ResolverContext,
   ParentType = ResolversTypes["Room"]
 > = {
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   width?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   height?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
 };
@@ -252,17 +310,22 @@ export type SubscriptionResolvers<
   ContextType = ResolverContext,
   ParentType = ResolversTypes["Subscription"]
 > = {
-  entityChanged?: SubscriptionResolver<
-    ResolversTypes["Entity"],
+  _empty?: SubscriptionResolver<
+    Maybe<ResolversTypes["String"]>,
     ParentType,
-    ContextType,
-    SubscriptionEntityChangedArgs
+    ContextType
   >;
   messageReceived?: SubscriptionResolver<
     ResolversTypes["Message"],
     ParentType,
     ContextType,
     SubscriptionMessageReceivedArgs
+  >;
+  entityChanged?: SubscriptionResolver<
+    ResolversTypes["Entity"],
+    ParentType,
+    ContextType,
+    SubscriptionEntityChangedArgs
   >;
 };
 
@@ -272,6 +335,7 @@ export interface UploadScalarConfig
 }
 
 export type Resolvers<ContextType = ResolverContext> = {
+  DateTime?: GraphQLScalarType;
   Entity?: EntityResolvers<ContextType>;
   Message?: MessageResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;

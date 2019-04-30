@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { createServer } from "net";
 
 import { ApolloServer } from "apollo-server";
-import typeDefs from "./src/typedefs";
+import typeDefs from "./src/types/all-typedefs";
 
 const configFile = process.argv.slice(2).includes("--client")
   ? "codegen.client.yml"
