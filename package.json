@@ -5,7 +5,7 @@
     "start:client": "env $(grep -v '^#' .env.dev | xargs) yarn workspace mudzone-client start",
     "start:server": "env $(grep -v '^#' .env.dev | xargs) yarn workspace mudzone-server start",
     "gen-client": "ts-node -T packages/server/generate-schema.ts --client",
-    "gen-server": "ts-node -T packages/server/generate-schema.ts --server",
+    "gen-server": "ts-node -T packages/server/generate-schema.ts",
     "test": "yarn workspaces run test"
   },
   "workspaces": [
@@ -15,10 +15,10 @@
     "@graphql-codegen/add": "^1.1.1",
     "@graphql-codegen/cli": "^1.1.1",
     "@graphql-codegen/introspection": "^1.1.1",
-    "@graphql-codegen/typescript": "1.1.1",
-    "@graphql-codegen/typescript-operations": "1.1.1",
-    "@graphql-codegen/typescript-react-apollo": "1.1.1",
-    "@graphql-codegen/typescript-resolvers": "1.1.1",
+    "@graphql-codegen/typescript": "^1.1.1",
+    "@graphql-codegen/typescript-operations": "^1.1.1",
+    "@graphql-codegen/typescript-react-apollo": "^1.1.1",
+    "@graphql-codegen/typescript-resolvers": "^1.1.1",
     "@typescript-eslint/eslint-plugin": "^1.7.0",
     "@typescript-eslint/parser": "^1.7.0",
     "eslint": "^5.16.0",

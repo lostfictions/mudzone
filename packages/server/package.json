@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "AGPL-3.0",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "ts-node-dev src/index.ts",
     "test": "echo '[SERVER]' && run-s -l test:*",
     "test:ts": "tsc --noEmit",
     "test:eslint": "eslint ./src --ext .ts,.tsx",
@@ -13,11 +13,14 @@
     "prettier": "prettier 'src/**/*' --write"
   },
   "devDependencies": {
-    "ts-node": "^8.1.0"
+    "ts-node": "^8.1.0",
+    "ts-node-dev": "^1.0.0-pre.32"
   },
   "dependencies": {
+    "@okgrow/graphql-scalars": "^0.4.5",
     "apollo-server": "^2.4.8",
     "envalid": "^5.0.0",
-    "graphql": "^14.2.1"
+    "graphql": "^14.2.1",
+    "lodash.merge": "^4.6.1"
   }
 }
