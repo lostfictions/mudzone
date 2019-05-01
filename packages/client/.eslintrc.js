@@ -14,7 +14,7 @@ module.exports = {
     }
   },
   settings: { react: { version: "detect" } },
-  plugins: ["react", "react-hooks"],
+  plugins: ["@typescript-eslint", "react", "react-hooks"],
   extends: [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -33,6 +33,15 @@ module.exports = {
     "prefer-const": "warn",
     "no-shadow": "warn",
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        vars: "all",
+        args: "none",
+        ignoreRestSiblings: true
+      }
+    ]
   }
 };
