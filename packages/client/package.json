@@ -6,9 +6,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "echo '[CLIENT]' && run-s -l test:*",
-    "test:ts": "tsc --noEmit",
     "test:eslint": "eslint ./src --ext .ts,.tsx",
     "test:prettier": "prettier '{src,queries}/**/*.{css,ts,tsx,graphql}' -l",
+    "test:ts": "tsc --noEmit",
     "prettier": "prettier '{src,queries}/**/*.{css,ts,tsx,graphql}' --write",
     "jest": "react-scripts test"
   },
