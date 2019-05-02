@@ -6,6 +6,7 @@ generates:
       - "typescript"
       - "typescript-resolvers"
     config:
+      noSchemaStitching: true
       mappers:
         Entity: ../store/db-types#EntityDbObject
       scalars:
