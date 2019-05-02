@@ -10,7 +10,8 @@
     "test:ts": "tsc --noEmit",
     "test:eslint": "eslint ./src --ext .ts,.tsx",
     "test:prettier": "prettier 'src/**/*' -l",
-    "prettier": "prettier 'src/**/*' --write"
+    "prettier": "prettier 'src/**/*' --write",
+    "clean": "node -e 'require(`fs-extra`).removeSync(`packages/server/persist`)'"
   },
   "devDependencies": {
     "@types/fs-extra": "^5.0.5",
