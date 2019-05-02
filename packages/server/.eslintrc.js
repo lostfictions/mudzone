@@ -12,6 +12,7 @@ module.exports = {
       modules: true
     }
   },
+  plugins: ["@typescript-eslint"],
   extends: ["eslint:recommended", "prettier", "prettier/@typescript-eslint"],
   rules: {
     curly: ["warn", "multi-line", "consistent"],
@@ -23,6 +24,15 @@ module.exports = {
     "no-unused-vars": "off",
     "no-var": "warn",
     "prefer-const": "warn",
-    "no-shadow": "warn"
+    "no-shadow": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        vars: "all",
+        args: "none",
+        ignoreRestSiblings: true
+      }
+    ]
   }
 };

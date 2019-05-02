@@ -7,9 +7,9 @@
   "scripts": {
     "start": "ts-node-dev src/index.ts",
     "test": "echo '[SERVER]' && run-s -l test:*",
-    "test:ts": "tsc --noEmit",
     "test:eslint": "eslint ./src --ext .ts,.tsx",
     "test:prettier": "prettier 'src/**/*' -l",
+    "test:ts": "tsc --noEmit",
     "prettier": "prettier 'src/**/*' --write",
     "clean": "node -e 'require(`fs-extra`).removeSync(`packages/server/persist`)'"
   },
