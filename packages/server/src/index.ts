@@ -1,22 +1,16 @@
 import { ApolloServer } from "apollo-server";
 import { ConnectionContext } from "subscriptions-transport-ws";
 import WebSocket from "ws";
-import { DateTime } from "@okgrow/graphql-scalars";
-import merge from "lodash.merge";
 
+import { typeDefs, resolvers } from "./types";
+import pubSub from "./pub-sub";
 import { randomName } from "./util/name";
 import { HOSTNAME, PORT, DATA_DIR } from "./env";
-
-import typeDefs from "./types/all-typedefs";
-import { ResolverContext, UserData } from "./resolver-context";
-import pubSub from "./pub-sub";
-
-import { resolvers as MessageResolvers } from "./types/messages";
-import { resolvers as EntityResolvers } from "./types/entities";
-import { resolvers as RoomResolvers } from "./types/rooms";
-
 import { getStore } from "./store/store";
 import { initSideEffects } from "./store/side-effects";
+
+// ts types
+import { ResolverContext, UserData } from "./resolver-context";
 import { ExpressContext } from "apollo-server-express/dist/ApolloServer";
 
 const getAddress = (context: ConnectionContext): string => {
@@ -34,12 +28,7 @@ const connections = new Map<WebSocket, UserData>();
 
   const server = new ApolloServer({
     typeDefs,
-    resolvers: merge(
-      { DateTime },
-      MessageResolvers,
-      EntityResolvers,
-      RoomResolvers
-    ),
+    resolvers,
     subscriptions: {
       onConnect: (_connectionParams, webSocket, context) => {
         const address = getAddress(context);
