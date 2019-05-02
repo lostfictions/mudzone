@@ -3,26 +3,30 @@ import pubSub from "../pub-sub";
 
 import { resolvers as messageResolvers } from "../types/messages";
 import { ENTITY_MOVE } from "../types/entities";
+import { ResolverContext } from "../resolver-context";
 
 export function initSideEffects(store: Store) {
   const timers = [
     setInterval(() => {
-      const context = {
+      const context: ResolverContext = {
         userData: {
-          name: "server"
+          name: "server",
+          address: "here"
         },
-        store
+        store,
+        pubSub
       };
 
       const { sendMessage } = messageResolvers.Mutation!;
 
-      (sendMessage as any)(
+      sendMessage!(
         {},
         {
           message: `hi from the server ${new Date().getSeconds()}`,
           channel: "default"
         },
-        context
+        context,
+        undefined as any
       );
     }, 5000),
     setInterval(() => {
