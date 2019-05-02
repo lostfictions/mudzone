@@ -1,7 +1,7 @@
 import { gql } from "apollo-server";
 import { withFilter } from "apollo-server";
 
-import pubSub from "./pub-sub";
+import pubSub from "../pub-sub";
 import { Message, Resolvers } from "../generated/graphql";
 
 export const CHAT_MESSAGE = "CHAT_MESSAGE";

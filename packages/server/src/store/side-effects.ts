@@ -1,8 +1,8 @@
 import { Store } from "./store";
-import pubSub from "./pub-sub";
+import pubSub from "../pub-sub";
 
-import { resolvers as messageResolvers } from "./messages";
-import { ENTITY_MOVE } from "./entities";
+import { resolvers as messageResolvers } from "../types/messages";
+import { ENTITY_MOVE } from "../types/entities";
 
 export function initSideEffects(store: Store) {
   const timers = [

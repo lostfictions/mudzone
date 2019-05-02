@@ -8,15 +8,15 @@ import { randomName } from "./util/name";
 import { HOSTNAME, PORT, DATA_DIR } from "./env";
 
 import typeDefs from "./types/all-typedefs";
-import { ResolverContext, UserData } from "./types/resolver-context";
-import pubSub from "./types/pub-sub";
+import { ResolverContext, UserData } from "./resolver-context";
+import pubSub from "./pub-sub";
 
 import { resolvers as MessageResolvers } from "./types/messages";
 import { resolvers as EntityResolvers } from "./types/entities";
 import { resolvers as RoomResolvers } from "./types/rooms";
 
-import { getStore } from "./types/store";
-import { initSideEffects } from "./types/side-effects";
+import { getStore } from "./store/store";
+import { initSideEffects } from "./store/side-effects";
 import { ExpressContext } from "apollo-server-express/dist/ApolloServer";
 
 const getAddress = (context: ConnectionContext): string => {

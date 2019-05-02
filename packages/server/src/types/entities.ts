@@ -8,8 +8,8 @@ import {
   Position,
   Room
 } from "../generated/graphql";
-import { EntityDbObject } from "./db-types";
-import pubSub from "./pub-sub";
+import { EntityDbObject } from "../store/db-types";
+import pubSub from "../pub-sub";
 
 // import { randomName } from "../util/name";
 

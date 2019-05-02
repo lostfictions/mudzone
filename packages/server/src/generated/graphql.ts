@@ -104,8 +104,8 @@ export type SubscriptionEntityChangedArgs = {
   id: Scalars["String"];
 };
 
-import { EntityDbObject } from "../types/db-types";
-import { ResolverContext } from "../types/resolver-context";
+import { EntityDbObject } from "../store/db-types";
+import { ResolverContext } from "../resolver-context";
 
 import {
   GraphQLResolveInfo,
