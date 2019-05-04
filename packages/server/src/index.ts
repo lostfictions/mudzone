@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server";
 import { ConnectionContext } from "subscriptions-transport-ws";
 import WebSocket from "ws";
 
-import { typeDefs, resolvers } from "./types";
+import { typeDefs, resolvers } from "./gql";
 import pubSub from "./pub-sub";
 import { randomName } from "./util/name";
 import { HOSTNAME, PORT, DATA_DIR } from "./env";

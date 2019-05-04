@@ -1,8 +1,8 @@
 import { Store } from "./store";
 import pubSub from "../pub-sub";
 
-import { resolvers as messageResolvers } from "../types/messages";
-import { ENTITY_MOVE } from "../types/entities";
+import { resolvers as messageResolvers } from "../gql/messages";
+import { ENTITY_MOVE } from "../gql/entities";
 import { ResolverContext } from "../resolver-context";
 
 export function initSideEffects(store: Store) {
