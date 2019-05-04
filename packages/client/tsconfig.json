@@ -7,8 +7,6 @@
       "esnext"
     ],
     "esModuleInterop": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": true,
     "target": "es5",
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
