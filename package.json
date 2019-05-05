@@ -4,8 +4,11 @@
     "start": "run-p -l start:*",
     "start:client": "env $(grep -v '^#' .env.dev | xargs) yarn workspace mudzone-client start",
     "start:server": "env $(grep -v '^#' .env.dev | xargs) yarn workspace mudzone-server start",
-    "gen-client": "ts-node -T packages/server/generate-schema.ts --client",
-    "gen-server": "ts-node -T packages/server/generate-schema.ts",
+    "gen": "run-s -l gen:*",
+    "gen:server": "run-s -l gen:server:*",
+    "gen:server:gql": "ts-node -T packages/server/generate-gql-types.ts",
+    "gen:server:schema": "ts-node -T packages/server/generate-db-schema.ts",
+    "gen:client": "ts-node -T packages/server/generate-gql-types.ts --client",
     "test": "yarn workspaces run test"
   },
   "workspaces": [

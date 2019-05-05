@@ -10,5 +10,9 @@
     ],
     "sourceMap": true
   },
-  "include": ["src/**/*", "generate-schema.ts"]
+  "include": [
+    "src/**/*",
+    "generate-gql-types.ts",
+    "generate-db-schema.ts"
+  ]
 }
