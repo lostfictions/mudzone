@@ -11,7 +11,7 @@ generates:
         Entity: ../store/db-types#EntityDbObject
       scalars:
         DateTime: Date
-      contextType: ../resolver-context#ResolverContext
+      contextType: ../types/resolver-context#ResolverContext
   ./graphql.schema.json:
     plugins:
       - "introspection"

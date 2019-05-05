@@ -105,7 +105,7 @@ export type SubscriptionEntityChangedArgs = {
 };
 
 import { EntityDbObject } from "../store/db-types";
-import { ResolverContext } from "../resolver-context";
+import { ResolverContext } from "../types/resolver-context";
 
 import {
   GraphQLResolveInfo,

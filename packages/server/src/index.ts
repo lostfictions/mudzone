@@ -10,7 +10,7 @@ import { getStore } from "./store/store";
 import { initSideEffects } from "./store/side-effects";
 
 // ts types
-import { ResolverContext, UserData } from "./resolver-context";
+import { ResolverContext, UserData } from "./types/resolver-context";
 import { ExpressContext } from "apollo-server-express/dist/ApolloServer";
 
 const getAddress = (context: ConnectionContext): string => {

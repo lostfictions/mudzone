@@ -3,7 +3,7 @@ import pubSub from "../pub-sub";
 
 import { resolvers as messageResolvers } from "../gql/messages";
 import { ENTITY_MOVE } from "../gql/entities";
-import { ResolverContext } from "../resolver-context";
+import { ResolverContext } from "../types/resolver-context";
 
 export function initSideEffects(store: Store) {
   const timers = [

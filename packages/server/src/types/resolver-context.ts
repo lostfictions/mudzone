@@ -1,6 +1,6 @@
 import { PubSub } from "apollo-server";
 
-import { Store } from "./store/store";
+import { Store } from "../store/store";
 
 export interface UserData {
   name: string;
