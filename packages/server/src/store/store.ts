@@ -1,13 +1,19 @@
-import path from "path";
+import { RxCollection } from "rxdb";
+import { distinctUntilChanged } from "rxjs/operators";
+import uuid from "uuid/v4";
 
-import { readJson, outputJson } from "fs-extra";
-// import uuid from "uuid/v4";
-import Loki, { Collection } from "lokijs";
-// import LokiFsStructuredAdapter from "lokijs/src/loki-fs-structured-adapter";
-
-import { FilterProperties } from "../util/filter-properties";
-import { Message, Room } from "../generated/graphql";
-import { EntityDbObject } from "./db-types";
+import pubSub from "../pub-sub";
+import RxDB from "./db-config";
+import {
+  EntityDbObject,
+  RoomSchema,
+  MessageSchema,
+  EntitySchema
+} from "../types/db-types";
+import { Message, Room, Position } from "../generated/graphql";
+import { ENTITY_MOVE } from "../gql/entities";
+import { RxChangeEventUpdate } from "rxdb/typings/rx-change-event";
+import { CHAT_MESSAGE } from "../gql/messages";
 
 interface CollectionMap {
   rooms: Room;
@@ -15,49 +21,67 @@ interface CollectionMap {
   messages: Message;
 }
 
-interface DB extends FilterProperties<Loki, { getCollection: any }> {
-  getCollection<K extends keyof CollectionMap>(
-    collectionName: K
-  ): Collection<CollectionMap[K]>;
-}
-
-interface AppState {
-  messageCounter: number;
-}
-
-export interface Store {
-  appState: AppState;
-  db: DB;
-}
+export type Store = {
+  [K in keyof CollectionMap]: RxCollection<CollectionMap[K], {}, {}>
+};
 
 export async function getStore(storePath: string): Promise<Store> {
-  const db = new Loki(path.join(storePath, "loki.db"), {
-    autosave: true
-  }) as DB;
-
-  await new Promise<void>((res, rej) => {
-    db.loadDatabase({}, err => {
-      if (err) rej(err);
-      res();
-    });
+  const db = await RxDB.create({
+    name: storePath,
+    adapter: "memory",
+    // queryChangeDetection: true,
+    multiInstance: false
   });
+
+  const store: Store = {
+    rooms: await db.collection({
+      name: "rooms",
+      schema: RoomSchema
+    }),
+    entities: await db.collection({
+      name: "entities",
+      schema: EntitySchema
+    }),
+    messages: await db.collection({
+      name: "messages",
+      schema: MessageSchema
+    })
+  };
 
   console.log("DB Loaded");
 
-  const ensureCollection = <K extends keyof CollectionMap>(
+  // TODO: move
+  store.entities.update$
+    .pipe(
+      // HACK: should be able to infer but it's getting confused
+      distinctUntilChanged<RxChangeEventUpdate<EntityDbObject>, Position>(
+        (pos, prev) => pos.x === prev.x && pos.y === prev.y,
+        ev => ev.data.v.position
+      )
+    )
+    .subscribe(ev => pubSub.publish(ENTITY_MOVE, ev.data.v));
+
+  store.messages.insert$.subscribe(ev =>
+    pubSub.publish(CHAT_MESSAGE, ev.data.v)
+  );
+
+  const ensureCollection = async <K extends keyof CollectionMap>(
     collectionName: K,
-    entries?: CollectionMap[K][]
+    entries: CollectionMap[K][]
   ) => {
-    if (!db.getCollection(collectionName)) {
-      const collection = db.addCollection(collectionName, {
-        unique: ["id"]
-      });
-      if (entries) collection.insert(entries);
-    }
+    const collection = store[collectionName];
+
+    await Promise.all(
+      entries.map(async e => {
+        if (!(await collection.findOne({ id: e.id }).exec())) {
+          await collection.insert(e as any);
+        }
+      })
+    );
   };
 
-  ensureCollection("rooms", [{ id: "default", height: 25, width: 30 }]);
-  ensureCollection("entities", [
+  await ensureCollection("rooms", [{ id: "default", height: 25, width: 30 }]);
+  await ensureCollection("entities", [
     {
       id: "player",
       name: "Player",
@@ -77,39 +101,15 @@ export async function getStore(storePath: string): Promise<Store> {
       color: "blue"
     }
   ]);
-  ensureCollection("messages", [
+  await ensureCollection("messages", [
     {
-      id: 0,
-      time: new Date(),
+      id: uuid(),
+      time: new Date().toISOString(),
       channel: "default",
       author: "old-server",
       text: "hello from history"
     }
   ]);
 
-  let appState: AppState;
-  const appStatePath = path.join(storePath, "app-state.json");
-  try {
-    appState = await readJson(appStatePath);
-  } catch (e) {
-    console.warn(
-      `Can't read serialized app state from ${appStatePath}, reinitializing`
-    );
-
-    const initialMessageCounterValue =
-      db.getCollection("messages").max("id") + 1;
-
-    console.log(`Initial messageCounter value: ${initialMessageCounterValue}`);
-
-    appState = {
-      messageCounter: db.getCollection("messages").max("id") + 1
-    };
-  }
-
-  setInterval(async () => {
-    await outputJson(appStatePath, appState);
-    // console.log(`Flushed app state to ${appStatePath}`);
-  }, 5000);
-
-  return { appState, db };
+  return store;
 }

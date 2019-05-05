@@ -8,7 +8,7 @@ generates:
     config:
       noSchemaStitching: true
       mappers:
-        Entity: ../store/db-types#EntityDbObject
+        Entity: ../types/db-types#EntityDbObject
       scalars:
         DateTime: Date
       contextType: ../types/resolver-context#ResolverContext

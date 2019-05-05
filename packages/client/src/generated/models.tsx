@@ -8,9 +8,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** Use JavaScript Date object for date/time fields. */
   DateTime: Date;
-  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
@@ -37,8 +35,8 @@ export type Entity = {
 };
 
 export type Message = {
-  id: Scalars["Int"];
-  time: Scalars["DateTime"];
+  id: Scalars["String"];
+  time: Scalars["String"];
   channel: Scalars["String"];
   author: Scalars["String"];
   text: Scalars["String"];

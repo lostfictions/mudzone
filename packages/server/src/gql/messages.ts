@@ -1,5 +1,6 @@
 import { gql } from "apollo-server";
 import { withFilter } from "apollo-server";
+import uuid from "uuid/v4";
 
 import pubSub from "../pub-sub";
 import { Message, Resolvers } from "../generated/graphql";
@@ -21,8 +22,8 @@ export const typeDefs = gql`
   }
 
   type Message {
-    id: Int!
-    time: DateTime!
+    id: String!
+    time: String!
     channel: String!
     author: String!
     text: String!
@@ -43,38 +44,30 @@ export const resolvers: Resolvers = {
     }
   },
   Mutation: {
-    sendMessage(_root, { message: text, channel }, context) {
+    async sendMessage(_root, { message: text, channel }, context) {
       const { name: author } = context.userData!;
 
-      const { appState, db } = context.store;
-
-      appState.messageCounter++;
+      const { messages } = context.store;
 
       const message: Message = {
-        id: appState.messageCounter,
-        time: new Date(),
+        id: uuid(),
+        time: new Date().toISOString(),
         author,
         text,
         channel
       };
 
-      db.getCollection("messages").insertOne(message);
-      // TODO: would be better to have a way to observe changes instead? for now
-      // let's just ensure all state changes (even locally) happen through
-      // resolvers.
-      pubSub.publish(CHAT_MESSAGE, message);
+      await messages.insert(message);
 
       return message;
     }
   },
   Query: {
     message(_root, { id }, context) {
-      return context.store.db.getCollection("messages").by("id", id) || null;
+      return context.store.messages.findOne({ id: { $eq: id } }).exec();
     },
     messages(_root, { channel }, context) {
-      return (
-        context.store.db.getCollection("messages").find({ channel }) || null
-      );
+      return context.store.messages.find({ channel: { $eq: channel } }).exec();
     }
   }
 };

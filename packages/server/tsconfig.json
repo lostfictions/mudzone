@@ -5,8 +5,10 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "lib": [
-      "es2017"
+      "es2017",
+      "dom" // needed to make some typings happy incl. rxjs
     ],
     "sourceMap": true
   },

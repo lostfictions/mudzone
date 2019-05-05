@@ -1,9 +1,8 @@
 import { Store } from "./store";
-import pubSub from "../pub-sub";
 
 import { resolvers as messageResolvers } from "../gql/messages";
-import { ENTITY_MOVE } from "../gql/entities";
 import { ResolverContext } from "../types/resolver-context";
+import { Room } from "../generated/graphql";
 
 export function initSideEffects(store: Store) {
   const timers = [
@@ -13,8 +12,7 @@ export function initSideEffects(store: Store) {
           name: "server",
           address: "here"
         },
-        store,
-        pubSub
+        store
       };
 
       const { sendMessage } = messageResolvers.Mutation!;
@@ -29,13 +27,14 @@ export function initSideEffects(store: Store) {
         undefined as any
       );
     }, 5000),
-    setInterval(() => {
-      const npc = store.db.getCollection("entities").by("id", "npc")!;
+    setInterval(async () => {
+      const npc = (await store.entities
+        .findOne({ id: { $eq: "npc" } })
+        .exec())!;
+
       const { x, y } = npc.position;
 
-      const { width, height } = store.db
-        .getCollection("rooms")
-        .by("id", npc.room)!;
+      const { width, height } = (await npc.populate("room")) as Room;
 
       const direction = Math.random();
 
@@ -70,14 +69,10 @@ export function initSideEffects(store: Store) {
         return;
       }
 
-      npc.position = {
+      await npc.atomicSet("position", {
         x: x + deltaX,
         y: y + deltaY
-      };
-
-      store.db.getCollection("entities").update(npc);
-
-      pubSub.publish(ENTITY_MOVE, npc);
+      });
     }, 900)
   ];
 

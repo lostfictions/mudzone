@@ -8,7 +8,7 @@ import {
   Position,
   Room
 } from "../generated/graphql";
-import { EntityDbObject } from "../store/db-types";
+import { EntityDbObject } from "../types/db-types";
 import pubSub from "../pub-sub";
 
 // import { randomName } from "../util/name";
@@ -66,28 +66,24 @@ export const resolvers: Resolvers = {
     }
   },
   Mutation: {
-    move(_root, { direction }, context) {
+    async move(_root, { direction }, context) {
       const { name: userName } = context.userData!;
 
       console.log(`${userName} wants to move in direction ${direction}`);
 
-      const entities = context.store.db.getCollection("entities");
+      const { entities } = context.store;
 
       // TODO: not just the player!
-      const entity = entities.by("id", "player");
+      const entity = await entities.findOne({ id: { $eq: "player" } }).exec();
 
       if (entity) {
-        const room = context.store.db
-          .getCollection("rooms")
-          .by("id", entity.room)!;
+        const room = await entity.populate("room");
         const nextPosition = tryMove(entity, room, direction);
         if (
           nextPosition.x !== entity.position.x ||
           nextPosition.y !== entity.position.y
         ) {
-          entity.position = nextPosition;
-          entities.update(entity);
-          pubSub.publish(ENTITY_MOVE, entity);
+          await entity.atomicSet("position", nextPosition);
         }
         return entity.position;
       }
@@ -96,13 +92,14 @@ export const resolvers: Resolvers = {
     }
   },
   Query: {
-    entity(_root, { id }, context) {
-      return context.store.db.getCollection("entities").by("id", id)!;
+    async entity(_root, { id }, context) {
+      return context.store.entities.findOne({ id: { $eq: id } }).exec();
     }
   },
   Entity: {
-    room(parent, _args, context) {
-      return context.store.db.getCollection("rooms").by("id", parent.room)!;
+    async room(parent, _args, _context) {
+      // TODO: fixme
+      return (parent as any).populate("room");
     }
   }
 };

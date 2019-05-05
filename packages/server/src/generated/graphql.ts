@@ -33,8 +33,8 @@ export type Entity = {
 };
 
 export type Message = {
-  id: Scalars["Int"];
-  time: Scalars["DateTime"];
+  id: Scalars["String"];
+  time: Scalars["String"];
   channel: Scalars["String"];
   author: Scalars["String"];
   text: Scalars["String"];
@@ -104,7 +104,7 @@ export type SubscriptionEntityChangedArgs = {
   id: Scalars["String"];
 };
 
-import { EntityDbObject } from "../store/db-types";
+import { EntityDbObject } from "../types/db-types";
 import { ResolverContext } from "../types/resolver-context";
 
 import {
@@ -185,16 +185,16 @@ export type ResolversTypes = {
   Query: {};
   String: Scalars["String"];
   Message: Message;
-  Int: Scalars["Int"];
-  DateTime: Scalars["DateTime"];
   Entity: EntityDbObject;
   Room: Room;
+  Int: Scalars["Int"];
   Position: Position;
   Mutation: {};
   Direction: Direction;
   Subscription: {};
   Boolean: Scalars["Boolean"];
   CacheControlScope: CacheControlScope;
+  DateTime: Scalars["DateTime"];
   Upload: Scalars["Upload"];
 };
 
@@ -230,8 +230,8 @@ export type MessageResolvers<
   ContextType = ResolverContext,
   ParentType = ResolversTypes["Message"]
 > = {
-  id?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  time?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  time?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   channel?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   author?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   text?: Resolver<ResolversTypes["String"], ParentType, ContextType>;

@@ -16,7 +16,6 @@
   "devDependencies": {
     "@types/fs-extra": "^5.0.5",
     "@types/lodash.merge": "^4.6.6",
-    "@types/lokijs": "^1.5.2",
     "@types/uuid": "^3.4.4",
     "ts-node": "^8.1.0",
     "ts-node-dev": "^1.0.0-pre.32",
@@ -29,7 +28,8 @@
     "fs-extra": "^7.0.1",
     "graphql": "^14.2.1",
     "lodash.merge": "^4.6.1",
-    "lokijs": "^1.5.6",
+    "pouchdb-adapter-memory": "^7.0.0",
+    "rxdb": "^8.1.0",
     "uuid": "^3.3.2"
   }
 }
