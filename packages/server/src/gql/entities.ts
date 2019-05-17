@@ -1,6 +1,7 @@
 import { gql } from "apollo-server";
 import { withFilter } from "apollo-server";
 
+import { withInitialValue } from "../util/with-initial-value";
 import {
   Resolvers,
   Entity,
@@ -55,9 +56,13 @@ export const typeDefs = gql`
 export const resolvers: Resolvers = {
   Subscription: {
     entityChanged: {
-      subscribe: withFilter(
-        () => pubSub.asyncIterator<Entity>(ENTITY_MOVE),
-        (payload, variables) => payload.id === variables.id
+      subscribe: withInitialValue(
+        withFilter(
+          () => pubSub.asyncIterator<Entity>(ENTITY_MOVE),
+          (payload, variables) => payload.id === variables.id
+        ),
+        (_root, { id }, context) =>
+          context.store.entities.findOne({ id: { $eq: id } }).exec()
       ),
       // skip having to do an additional db lookup on id
       resolve(iteratorResult: any) {
