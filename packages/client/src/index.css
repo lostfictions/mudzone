@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Hermit";
+  src: url("./fonts/Hermit-medium.woff2") format("woff2"),
+    url("./fonts/Hermit-medium.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -8,7 +16,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+code,
+pre {
+  font-family: "Hermit", source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
