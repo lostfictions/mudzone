@@ -5,18 +5,20 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Main",
+      "name": "Debug Server",
       "type": "node",
       "request": "launch",
       "program": "${workspaceRoot}/node_modules/ts-node/dist/bin.js",
       "args": [
-        "--transpileOnly",
-        "${workspaceRoot}/src/main.ts"
+        "--project",
+        "${workspaceRoot}/packages/server/tsconfig.json",
+        "--transpile-only",
+        "${workspaceRoot}/packages/server/src/index.ts"
       ],
       "cwd": "${workspaceRoot}",
       "protocol": "inspector",
       "env": {
-        "USE_CLI": "true"
+        // "USE_CLI": "true"
       },
       "console": "integratedTerminal"
     },
@@ -25,7 +27,12 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceRoot}/node_modules/ts-node/dist/bin.js",
-      "args": ["--transpileOnly", "${relativeFile}", "--", "local"],
+      "args": [
+        "--transpileOnly",
+        "${relativeFile}",
+        "--",
+        "local"
+      ],
       "cwd": "${workspaceRoot}",
       "protocol": "inspector"
     }
