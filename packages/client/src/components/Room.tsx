@@ -12,9 +12,9 @@ import styles from "./Room.module.css";
 
 export default function Room() {
   return (
-    <div>
+    <div className={styles.container}>
       <RoomDisplay />
-      <Movement />
+      <Controls />
     </div>
   );
 }
@@ -37,19 +37,17 @@ function RoomDisplay() {
   const { name: roomName, entities, width, height } = data!.room!;
 
   return (
-    <>
-      <div>
-        <pre>{roomName}</pre>
-        <div
-          className={styles.container}
-          style={{ "--cols": width, "--rows": height } as any}
-        >
-          {entities.map(({ id }) => (
-            <Entity key={id} id={id} rows={height} />
-          ))}
-        </div>
+    <div>
+      <pre>{roomName}</pre>
+      <div
+        className={styles.roomgrid}
+        style={{ "--cols": width, "--rows": height } as any}
+      >
+        {entities.map(({ id }) => (
+          <Entity key={id} id={id} rows={height} />
+        ))}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -71,7 +69,7 @@ function Entity({ id, rows }: { id: string; rows: number }) {
   return <pre style={{ gridColumn: x + 1, gridRow: rows - y }}>@</pre>;
 }
 
-function Movement() {
+function Controls() {
   const move = useMoveMutation();
 
   const moveLeft = useCallback(() => {
@@ -102,11 +100,11 @@ function Movement() {
   }, [moveLeft, moveRight, moveUp, moveDown]);
 
   return (
-    <>
+    <div>
       <button onClick={moveLeft}>Left</button>
       <button onClick={moveUp}>Up</button>
       <button onClick={moveDown}>Down</button>
       <button onClick={moveRight}>Right</button>
-    </>
+    </div>
   );
 }
