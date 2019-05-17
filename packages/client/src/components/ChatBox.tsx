@@ -5,9 +5,11 @@ import {
   useSendMessageMutation
 } from "../generated/models";
 
+import styles from "./ChatBox.module.css";
+
 export default function ChatBox() {
   return (
-    <div>
+    <div className={styles.container}>
       <MessageList />
       <MessageInput />
     </div>
@@ -38,7 +40,7 @@ function MessageList() {
   }
 
   return (
-    <div>
+    <div className={styles.messagelist}>
       {messageList.map(({ author, text }, i) => (
         <div key={i}>
           <span style={{ fontWeight: "bold" }}>{author}</span>: {text}
@@ -60,7 +62,7 @@ function MessageInput() {
   }, [sendMessage, text]);
 
   return (
-    <>
+    <div>
       <input
         value={text}
         onChange={e => {
@@ -68,6 +70,6 @@ function MessageInput() {
         }}
       />
       <button onClick={doSendMessage}>Send</button>
-    </>
+    </div>
   );
 }
