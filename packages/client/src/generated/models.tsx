@@ -8,7 +8,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** Use JavaScript Date object for date/time fields. */
   DateTime: Date;
+  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
@@ -88,8 +90,10 @@ export type QueryRoomArgs = {
 
 export type Room = {
   id: Scalars["String"];
+  name: Scalars["String"];
   width: Scalars["Int"];
   height: Scalars["Int"];
+  entities: Array<Entity>;
 };
 
 export type Subscription = {
@@ -133,6 +137,18 @@ export type MoveMutationVariables = {
 
 export type MoveMutation = { __typename?: "Mutation" } & {
   move: Maybe<{ __typename?: "Position" } & Pick<Position, "x" | "y">>;
+};
+
+export type RoomQueryVariables = {
+  id: Scalars["String"];
+};
+
+export type RoomQuery = { __typename?: "Query" } & {
+  room: Maybe<
+    { __typename?: "Room" } & Pick<Room, "name" | "width" | "height"> & {
+        entities: Array<{ __typename?: "Entity" } & Pick<Entity, "id">>;
+      }
+  >;
 };
 
 export type SendMessageMutationVariables = {
@@ -455,6 +471,106 @@ export function useMoveMutation(
 ) {
   return ReactApolloHooks.useMutation<MoveMutation, MoveMutationVariables>(
     MoveDocument,
+    baseOptions
+  );
+}
+export const RoomDocument: DocumentNode = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "Room" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          },
+          directives: []
+        }
+      ],
+      directives: [],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "room" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+              }
+            ],
+            directives: [],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "name" },
+                  arguments: [],
+                  directives: []
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "width" },
+                  arguments: [],
+                  directives: []
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "height" },
+                  arguments: [],
+                  directives: []
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "entities" },
+                  arguments: [],
+                  directives: [],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "id" },
+                        arguments: [],
+                        directives: []
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+};
+
+export const RoomComponent = (
+  props: Omit<
+    Omit<ReactApollo.QueryProps<RoomQuery, RoomQueryVariables>, "query">,
+    "variables"
+  > & { variables: RoomQueryVariables }
+) => (
+  <ReactApollo.Query<RoomQuery, RoomQueryVariables>
+    query={RoomDocument}
+    {...props}
+  />
+);
+
+export function useRoomQuery(
+  baseOptions?: ReactApolloHooks.QueryHookOptions<RoomQueryVariables>
+) {
+  return ReactApolloHooks.useQuery<RoomQuery, RoomQueryVariables>(
+    RoomDocument,
     baseOptions
   );
 }

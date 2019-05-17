@@ -1,5 +1,5 @@
 [
   "EntityDbObject",
-  "Room",
+  "RoomDbObject",
   "Message"
 ]

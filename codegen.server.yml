@@ -8,7 +8,8 @@ generates:
     config:
       noSchemaStitching: true
       mappers:
-        Entity: ../types/db-types#EntityDbObject
+        Entity: ../types/db-types#EntityDoc
+        Room: ../types/db-types#RoomDoc
       scalars:
         DateTime: Date
       contextType: ../types/resolver-context#ResolverContext

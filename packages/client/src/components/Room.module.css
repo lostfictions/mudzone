@@ -1,0 +1,28 @@
+:root {
+  --grid-size: 18px;
+}
+
+.container {
+  display: grid;
+  font-size: 16px;
+  place-items: center;
+  grid-template-columns: repeat(var(--cols), var(--grid-size));
+  grid-template-rows: repeat(var(--rows), var(--grid-size));
+  /* properties for debugging: */
+  background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 17px,
+      #ccc 17px,
+      #ccc 18px
+    ),
+    repeating-linear-gradient(
+      -90deg,
+      transparent,
+      transparent 17px,
+      #ccc 17px,
+      #ccc 18px
+    );
+  background-size: 18px 18px;
+  /* end debugging props */
+}

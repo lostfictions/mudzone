@@ -6,17 +6,18 @@ import pubSub from "../pub-sub";
 import RxDB from "./db-config";
 import {
   EntityDbObject,
+  EntitySchema,
+  RoomDbObject,
   RoomSchema,
-  MessageSchema,
-  EntitySchema
+  MessageSchema
 } from "../types/db-types";
-import { Message, Room, Position } from "../generated/graphql";
+import { Message, Position } from "../generated/graphql";
 import { ENTITY_MOVE } from "../gql/entities";
 import { RxChangeEventUpdate } from "rxdb/typings/rx-change-event";
 import { CHAT_MESSAGE } from "../gql/messages";
 
 interface CollectionMap {
-  rooms: Room;
+  rooms: RoomDbObject;
   entities: EntityDbObject;
   messages: Message;
 }
@@ -80,7 +81,15 @@ export async function getStore(storePath: string): Promise<Store> {
     );
   };
 
-  await ensureCollection("rooms", [{ id: "default", height: 25, width: 30 }]);
+  await ensureCollection("rooms", [
+    {
+      id: "default",
+      name: "default",
+      height: 25,
+      width: 30,
+      entities: ["npc", "player"]
+    }
+  ]);
   await ensureCollection("entities", [
     {
       id: "player",

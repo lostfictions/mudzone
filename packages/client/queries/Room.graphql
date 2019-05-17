@@ -1,0 +1,10 @@
+query Room($id: String!) {
+  room(id: $id) {
+    name
+    width
+    height
+    entities {
+      id
+    }
+  }
+}

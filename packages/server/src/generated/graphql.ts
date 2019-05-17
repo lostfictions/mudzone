@@ -6,7 +6,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** Use JavaScript Date object for date/time fields. */
   DateTime: Date;
+  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
@@ -86,8 +88,10 @@ export type QueryRoomArgs = {
 
 export type Room = {
   id: Scalars["String"];
+  name: Scalars["String"];
   width: Scalars["Int"];
   height: Scalars["Int"];
+  entities: Array<Entity>;
 };
 
 export type Subscription = {
@@ -104,7 +108,7 @@ export type SubscriptionEntityChangedArgs = {
   id: Scalars["String"];
 };
 
-import { EntityDbObject } from "../types/db-types";
+import { EntityDoc, RoomDoc } from "../types/db-types";
 import { ResolverContext } from "../types/resolver-context";
 
 import {
@@ -185,8 +189,8 @@ export type ResolversTypes = {
   Query: {};
   String: Scalars["String"];
   Message: Message;
-  Entity: EntityDbObject;
-  Room: Room;
+  Entity: EntityDoc;
+  Room: RoomDoc;
   Int: Scalars["Int"];
   Position: Position;
   Mutation: {};
@@ -300,8 +304,10 @@ export type RoomResolvers<
   ParentType = ResolversTypes["Room"]
 > = {
   id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   width?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   height?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  entities?: Resolver<Array<ResolversTypes["Entity"]>, ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<

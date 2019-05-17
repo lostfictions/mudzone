@@ -98,8 +98,7 @@ export const resolvers: Resolvers = {
   },
   Entity: {
     async room(parent, _args, _context) {
-      // TODO: fixme
-      return (parent as any).populate("room");
+      return parent.populate("room");
     }
   }
 };
@@ -126,13 +125,13 @@ function canMoveInDirection(
 ): boolean {
   switch (direction) {
     case Direction.Right:
-      return entity.position.x < room.width;
+      return entity.position.x < room.width - 1;
     case Direction.Down:
       return entity.position.y > 0;
     case Direction.Left:
       return entity.position.x > 0;
     case Direction.Up:
-      return entity.position.y < room.height;
+      return entity.position.y < room.height - 1;
   }
 }
 

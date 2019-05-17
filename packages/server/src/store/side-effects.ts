@@ -44,7 +44,7 @@ export function initSideEffects(store: Store) {
       /* eslint-disable no-fallthrough */
       switch (true) {
         case direction < 0.25:
-          if (x < width) {
+          if (x < width - 1) {
             deltaX = 1;
             break;
           }
@@ -59,7 +59,7 @@ export function initSideEffects(store: Store) {
             break;
           }
         case direction < 1:
-          if (y < height) {
+          if (y < height - 1) {
             deltaY = 1;
           }
       }
