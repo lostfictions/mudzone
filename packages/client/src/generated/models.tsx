@@ -115,9 +115,10 @@ export type EntityChangedSubscriptionVariables = {
 };
 
 export type EntityChangedSubscription = { __typename?: "Subscription" } & {
-  entityChanged: { __typename?: "Entity" } & Pick<Entity, "id"> & {
-      position: { __typename?: "Position" } & Pick<Position, "x" | "y">;
-    };
+  entityChanged: { __typename?: "Entity" } & Pick<
+    Entity,
+    "id" | "appearance" | "color"
+  > & { position: { __typename?: "Position" } & Pick<Position, "x" | "y"> };
 };
 
 export type MessageReceivedSubscriptionVariables = {
@@ -204,6 +205,18 @@ export const EntityChangedDocument: DocumentNode = {
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "id" },
+                  arguments: [],
+                  directives: []
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "appearance" },
+                  arguments: [],
+                  directives: []
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "color" },
                   arguments: [],
                   directives: []
                 },

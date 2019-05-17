@@ -87,7 +87,7 @@ export async function getStore(storePath: string): Promise<Store> {
       name: "default",
       height: 25,
       width: 30,
-      entities: ["npc", "player"]
+      entities: ["npc", "player", "wall"]
     }
   ]);
   await ensureCollection("entities", [
@@ -108,6 +108,15 @@ export async function getStore(storePath: string): Promise<Store> {
       position: { x: 2, y: 2 },
       appearance: "@",
       color: "blue"
+    },
+    {
+      id: "wall",
+      name: "wall",
+      description: "thick as a brick.",
+      room: "default",
+      position: { x: 10, y: 10 },
+      appearance: "#",
+      color: "#556"
     }
   ]);
   await ensureCollection("messages", [

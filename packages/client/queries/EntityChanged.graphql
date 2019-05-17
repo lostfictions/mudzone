@@ -1,6 +1,8 @@
 subscription EntityChanged($id: String!) {
   entityChanged(id: $id) {
     id
+    appearance
+    color
     position {
       x
       y

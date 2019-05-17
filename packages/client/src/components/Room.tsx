@@ -57,16 +57,25 @@ function Entity({ id, rows }: { id: string; rows: number }) {
   });
 
   if (error) {
-    throw error;
+    console.error(error);
+    return null;
   }
 
   if (loading) {
     return null;
   }
 
-  const { x, y } = data!.entityChanged.position;
+  const {
+    position: { x, y },
+    appearance,
+    color
+  } = data!.entityChanged;
 
-  return <pre style={{ gridColumn: x + 1, gridRow: rows - y }}>@</pre>;
+  return (
+    <pre style={{ color, gridColumn: x + 1, gridRow: rows - y }}>
+      {appearance}
+    </pre>
+  );
 }
 
 function Controls() {
