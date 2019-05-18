@@ -2,7 +2,9 @@ import { Store } from "./store";
 
 import { resolvers as messageResolvers } from "../gql/messages";
 import { ResolverContext } from "../types/resolver-context";
-import { Room } from "../generated/graphql";
+import { Direction } from "../generated/graphql";
+import { RoomDoc } from "../types/db-types";
+import { canMoveInDirection } from "../gql/entities";
 
 export function initSideEffects(store: Store) {
   const timers = [
@@ -32,9 +34,7 @@ export function initSideEffects(store: Store) {
         .findOne({ id: { $eq: "npc" } })
         .exec())!;
 
-      const { x, y } = npc.position;
-
-      const { width, height } = (await npc.populate("room")) as Room;
+      const room: RoomDoc = await npc.populate("room");
 
       const direction = Math.random();
 
@@ -44,23 +44,31 @@ export function initSideEffects(store: Store) {
       /* eslint-disable no-fallthrough */
       switch (true) {
         case direction < 0.25:
-          if (x < width - 1) {
+          if (await canMoveInDirection(npc, room, Direction.Right)) {
             deltaX = 1;
             break;
           }
         case direction < 0.5:
-          if (y > 0) {
+          if (await canMoveInDirection(npc, room, Direction.Down)) {
             deltaY = -1;
             break;
           }
         case direction < 0.75:
-          if (x > 0) {
+          if (await canMoveInDirection(npc, room, Direction.Left)) {
             deltaX = -1;
             break;
           }
         case direction < 1:
-          if (y < height - 1) {
+          if (await canMoveInDirection(npc, room, Direction.Up)) {
             deltaY = 1;
+            // if we happen to be trying to move up and fail, we won't move at
+            // all. that is, the ordering of cases here matters: trying to move
+            // right will cycle through all the possible directions, trying to
+            // move left will only try left and up, etc.
+
+            // maybe a little weird, but until we have a better way of
+            // doing hit testing maybe it's better not to do anything more
+            // complex.
           }
       }
       /* eslint-enable no-fallthrough */
@@ -69,6 +77,9 @@ export function initSideEffects(store: Store) {
         return;
       }
 
+      // TODO: techincally the whole block should be atomic, but who knows
+      // whether rxdb even respects what it claims
+      const { x, y } = npc.position;
       await npc.atomicSet("position", {
         x: x + deltaX,
         y: y + deltaY

@@ -22,6 +22,11 @@ export interface RoomDbObject
 }
 export type RoomDoc = RxDocument<RoomDbObject>;
 
+// The below json schema files are generated from the above TS interface/type
+// declarations. They're then amended with some additional schema-specific data,
+// like which fields are references or the primary key. Simple and not at all
+// error-prone, right?
+
 import EntitySchemaJson from "../../schemas/entity-db-object.json";
 import MessageSchemaJson from "../../schemas/message.json";
 import RoomSchemaJson from "../../schemas/room-db-object.json";

@@ -2,14 +2,8 @@ import { gql } from "apollo-server";
 import { withFilter } from "apollo-server";
 
 import { withInitialValue } from "../util/with-initial-value";
-import {
-  Resolvers,
-  Entity,
-  Direction,
-  Position,
-  Room
-} from "../generated/graphql";
-import { EntityDbObject } from "../types/db-types";
+import { Resolvers, Entity, Direction, Position } from "../generated/graphql";
+import { EntityDbObject, RoomDoc } from "../types/db-types";
 import pubSub from "../pub-sub";
 
 // import { randomName } from "../util/name";
@@ -72,28 +66,27 @@ export const resolvers: Resolvers = {
   },
   Mutation: {
     async move(_root, { direction }, context) {
-      const { name: userName } = context.userData!;
-
-      console.log(`${userName} wants to move in direction ${direction}`);
+      const { name: username } = context.userData!;
 
       const { entities } = context.store;
 
       // TODO: not just the player!
       const entity = await entities.findOne({ id: { $eq: "player" } }).exec();
 
-      if (entity) {
-        const room = await entity.populate("room");
-        const nextPosition = tryMove(entity, room, direction);
-        if (
-          nextPosition.x !== entity.position.x ||
-          nextPosition.y !== entity.position.y
-        ) {
-          await entity.atomicSet("position", nextPosition);
-        }
-        return entity.position;
+      if (!entity) {
+        console.log(`No entity found for username ${username}`);
+        return null;
       }
 
-      return null;
+      const room: RoomDoc = await entity.populate("room");
+      const nextPosition = await getNextPosition(entity, room, direction);
+      if (
+        nextPosition.x !== entity.position.x ||
+        nextPosition.y !== entity.position.y
+      ) {
+        await entity.atomicSet("position", nextPosition);
+      }
+      return entity.position;
     }
   },
   Query: {
@@ -123,29 +116,49 @@ export const resolvers: Resolvers = {
 //   }
 // }
 
-function canMoveInDirection(
+export async function canMoveInDirection(
   entity: EntityDbObject,
-  room: Room,
+  room: RoomDoc,
   direction: Direction
-): boolean {
+): Promise<boolean> {
+  let targetX = entity.position.x;
+  let targetY = entity.position.y;
   switch (direction) {
     case Direction.Right:
-      return entity.position.x < room.width - 1;
+      targetX += 1;
+      break;
     case Direction.Down:
-      return entity.position.y > 0;
+      targetY -= 1;
+      break;
     case Direction.Left:
-      return entity.position.x > 0;
+      targetX -= 1;
+      break;
     case Direction.Up:
-      return entity.position.y < room.height - 1;
+      targetY += 1;
+      break;
   }
+
+  if (targetX > room.width - 1) return false; // right
+  if (targetY < 0) return false; // down
+  if (targetX < 0) return false; // left
+  if (targetY > room.height - 1) return false; // up
+
+  // incredibly naive hit detection
+  const entities: EntityDbObject[] = await room.populate("entities");
+  const isBlocked = entities.some(
+    e => e.position.x === targetX && e.position.y === targetY
+  );
+
+  return !isBlocked;
 }
 
-function tryMove(
+async function getNextPosition(
   entity: EntityDbObject,
-  room: Room,
+  room: RoomDoc,
   direction: Direction
-): Position {
-  if (!canMoveInDirection(entity, room, direction)) return entity.position;
+): Promise<Position> {
+  const canMove = await canMoveInDirection(entity, room, direction);
+  if (!canMove) return entity.position;
 
   const { x, y } = entity.position;
 
