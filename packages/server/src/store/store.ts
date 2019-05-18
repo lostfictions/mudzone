@@ -1,5 +1,5 @@
 import { RxCollection } from "rxdb";
-import { distinctUntilChanged } from "rxjs/operators";
+import { distinctUntilChanged, scan, groupBy, flatMap } from "rxjs/operators";
 import uuid from "uuid/v4";
 
 import pubSub from "../pub-sub";
@@ -15,6 +15,7 @@ import { Message, Position } from "../generated/graphql";
 import { ENTITY_MOVE } from "../gql/entities";
 import { RxChangeEventUpdate } from "rxdb/typings/rx-change-event";
 import { CHAT_MESSAGE } from "../gql/messages";
+import { ROOM_CHANGED } from "../gql/rooms";
 
 interface CollectionMap {
   rooms: RoomDbObject;
@@ -54,10 +55,15 @@ export async function getStore(storePath: string): Promise<Store> {
   // TODO: move
   store.entities.update$
     .pipe(
+      groupBy(ev => ev.data.v.id),
       // HACK: should be able to infer but it's getting confused
-      distinctUntilChanged<RxChangeEventUpdate<EntityDbObject>, Position>(
-        (pos, prev) => pos.x === prev.x && pos.y === prev.y,
-        ev => ev.data.v.position
+      flatMap(group$ =>
+        group$.pipe(
+          distinctUntilChanged<RxChangeEventUpdate<EntityDbObject>, Position>(
+            (pos, prev) => pos.x === prev.x && pos.y === prev.y,
+            ev => ev.data.v.position
+          )
+        )
       )
     )
     .subscribe(ev => pubSub.publish(ENTITY_MOVE, ev.data.v));
@@ -65,6 +71,55 @@ export async function getStore(storePath: string): Promise<Store> {
   store.messages.insert$.subscribe(ev =>
     pubSub.publish(CHAT_MESSAGE, ev.data.v)
   );
+
+  store.rooms.update$
+    .pipe(
+      groupBy(ev => ev.data.v.id),
+      flatMap(group$ =>
+        group$.pipe(
+          // HACK: should be able to infer but it's getting confused
+          distinctUntilChanged<RxChangeEventUpdate<RoomDbObject>, string[]>(
+            // comparing length should be ok (famous last words)
+            (entities, prev) => entities.length === prev.length,
+            ev => ev.data.v.entities
+          ),
+          scan(
+            (acc, curr) => {
+              const left = acc.prev.filter(
+                id => !curr.data.v.entities.includes(id)
+              );
+              const joined = curr.data.v.entities.filter(
+                id => !acc.prev.includes(id)
+              );
+              return {
+                id: curr.data.v.id,
+                prev: curr.data.v.entities,
+                left,
+                joined
+              };
+            },
+            {
+              id: "",
+              prev: [] as string[],
+              left: [] as string[],
+              joined: [] as string[]
+            }
+          )
+        )
+      )
+    )
+    .subscribe(data => {
+      const payload = {} as any;
+      if (data.left && data.left.length > 0) {
+        payload.left = data.left.map(id => ({ id }));
+      }
+      if (data.joined && data.joined.length > 0) {
+        payload.joined = data.joined.map(id => ({ id }));
+      }
+      if (payload.joined || payload.left) {
+        pubSub.publish(ROOM_CHANGED, { id: data.id, roomChanged: payload });
+      }
+    });
 
   const ensureCollection = async <K extends keyof CollectionMap>(
     collectionName: K,
@@ -87,19 +142,10 @@ export async function getStore(storePath: string): Promise<Store> {
       name: "default",
       height: 25,
       width: 30,
-      entities: ["npc", "player", "wall"]
+      entities: ["npc", "wall"]
     }
   ]);
   await ensureCollection("entities", [
-    {
-      id: "player",
-      name: "Player",
-      description: "despite everything, it's still you.",
-      room: "default",
-      position: { x: 5, y: 5 },
-      appearance: "@",
-      color: "red"
-    },
     {
       id: "npc",
       name: "NPC",

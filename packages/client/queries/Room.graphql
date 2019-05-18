@@ -1,3 +1,17 @@
+subscription RoomChanged($id: String!) {
+  roomChanged(id: $id) {
+    name
+    width
+    height
+    joined {
+      id
+    }
+    left {
+      id
+    }
+  }
+}
+
 query Room($id: String!) {
   room(id: $id) {
     name

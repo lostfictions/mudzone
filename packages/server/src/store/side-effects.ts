@@ -11,6 +11,7 @@ export function initSideEffects(store: Store) {
     setInterval(() => {
       const context: ResolverContext = {
         userData: {
+          id: "whatever",
           name: "server",
           address: "here"
         },

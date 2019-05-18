@@ -6,9 +6,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** Use JavaScript Date object for date/time fields. */
   DateTime: Date;
-  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
@@ -94,10 +92,19 @@ export type Room = {
   entities: Array<Entity>;
 };
 
+export type RoomChange = {
+  name?: Maybe<Scalars["String"]>;
+  width?: Maybe<Scalars["Int"]>;
+  height?: Maybe<Scalars["Int"]>;
+  joined?: Maybe<Array<Entity>>;
+  left?: Maybe<Array<Entity>>;
+};
+
 export type Subscription = {
   _empty?: Maybe<Scalars["String"]>;
   messageReceived: Message;
   entityChanged: Entity;
+  roomChanged: RoomChange;
 };
 
 export type SubscriptionMessageReceivedArgs = {
@@ -105,6 +112,10 @@ export type SubscriptionMessageReceivedArgs = {
 };
 
 export type SubscriptionEntityChangedArgs = {
+  id: Scalars["String"];
+};
+
+export type SubscriptionRoomChangedArgs = {
   id: Scalars["String"];
 };
 
@@ -196,6 +207,10 @@ export type ResolversTypes = {
   Mutation: {};
   Direction: Direction;
   Subscription: {};
+  RoomChange: Omit<RoomChange, "joined" | "left"> & {
+    joined?: Maybe<Array<ResolversTypes["Entity"]>>;
+    left?: Maybe<Array<ResolversTypes["Entity"]>>;
+  };
   Boolean: Scalars["Boolean"];
   CacheControlScope: CacheControlScope;
   DateTime: Scalars["DateTime"];
@@ -310,6 +325,25 @@ export type RoomResolvers<
   entities?: Resolver<Array<ResolversTypes["Entity"]>, ParentType, ContextType>;
 };
 
+export type RoomChangeResolvers<
+  ContextType = ResolverContext,
+  ParentType = ResolversTypes["RoomChange"]
+> = {
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  width?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  height?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  joined?: Resolver<
+    Maybe<Array<ResolversTypes["Entity"]>>,
+    ParentType,
+    ContextType
+  >;
+  left?: Resolver<
+    Maybe<Array<ResolversTypes["Entity"]>>,
+    ParentType,
+    ContextType
+  >;
+};
+
 export type SubscriptionResolvers<
   ContextType = ResolverContext,
   ParentType = ResolversTypes["Subscription"]
@@ -331,6 +365,12 @@ export type SubscriptionResolvers<
     ContextType,
     SubscriptionEntityChangedArgs
   >;
+  roomChanged?: SubscriptionResolver<
+    ResolversTypes["RoomChange"],
+    ParentType,
+    ContextType,
+    SubscriptionRoomChangedArgs
+  >;
 };
 
 export interface UploadScalarConfig
@@ -346,6 +386,7 @@ export type Resolvers<ContextType = ResolverContext> = {
   Position?: PositionResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Room?: RoomResolvers<ContextType>;
+  RoomChange?: RoomChangeResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   Upload?: GraphQLScalarType;
 };

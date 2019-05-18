@@ -8,9 +8,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** Use JavaScript Date object for date/time fields. */
   DateTime: Date;
-  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
@@ -96,10 +94,19 @@ export type Room = {
   entities: Array<Entity>;
 };
 
+export type RoomChange = {
+  name?: Maybe<Scalars["String"]>;
+  width?: Maybe<Scalars["Int"]>;
+  height?: Maybe<Scalars["Int"]>;
+  joined?: Maybe<Array<Entity>>;
+  left?: Maybe<Array<Entity>>;
+};
+
 export type Subscription = {
   _empty?: Maybe<Scalars["String"]>;
   messageReceived: Message;
   entityChanged: Entity;
+  roomChanged: RoomChange;
 };
 
 export type SubscriptionMessageReceivedArgs = {
@@ -107,6 +114,10 @@ export type SubscriptionMessageReceivedArgs = {
 };
 
 export type SubscriptionEntityChangedArgs = {
+  id: Scalars["String"];
+};
+
+export type SubscriptionRoomChangedArgs = {
   id: Scalars["String"];
 };
 
@@ -138,6 +149,20 @@ export type MoveMutationVariables = {
 
 export type MoveMutation = { __typename?: "Mutation" } & {
   move: Maybe<{ __typename?: "Position" } & Pick<Position, "x" | "y">>;
+};
+
+export type RoomChangedSubscriptionVariables = {
+  id: Scalars["String"];
+};
+
+export type RoomChangedSubscription = { __typename?: "Subscription" } & {
+  roomChanged: { __typename?: "RoomChange" } & Pick<
+    RoomChange,
+    "name" | "width" | "height"
+  > & {
+      joined: Maybe<Array<{ __typename?: "Entity" } & Pick<Entity, "id">>>;
+      left: Maybe<Array<{ __typename?: "Entity" } & Pick<Entity, "id">>>;
+    };
 };
 
 export type RoomQueryVariables = {
@@ -486,6 +511,135 @@ export function useMoveMutation(
     MoveDocument,
     baseOptions
   );
+}
+export const RoomChangedDocument: DocumentNode = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "subscription",
+      name: { kind: "Name", value: "RoomChanged" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          },
+          directives: []
+        }
+      ],
+      directives: [],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "roomChanged" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+              }
+            ],
+            directives: [],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "name" },
+                  arguments: [],
+                  directives: []
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "width" },
+                  arguments: [],
+                  directives: []
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "height" },
+                  arguments: [],
+                  directives: []
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "joined" },
+                  arguments: [],
+                  directives: [],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "id" },
+                        arguments: [],
+                        directives: []
+                      }
+                    ]
+                  }
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "left" },
+                  arguments: [],
+                  directives: [],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "id" },
+                        arguments: [],
+                        directives: []
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+};
+
+export const RoomChangedComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.SubscriptionProps<
+        RoomChangedSubscription,
+        RoomChangedSubscriptionVariables
+      >,
+      "subscription"
+    >,
+    "variables"
+  > & { variables?: RoomChangedSubscriptionVariables }
+) => (
+  <ReactApollo.Subscription<
+    RoomChangedSubscription,
+    RoomChangedSubscriptionVariables
+  >
+    subscription={RoomChangedDocument}
+    {...props}
+  />
+);
+
+export function useRoomChangedSubscription(
+  baseOptions?: ReactApolloHooks.SubscriptionHookOptions<
+    RoomChangedSubscription,
+    RoomChangedSubscriptionVariables
+  >
+) {
+  return ReactApolloHooks.useSubscription<
+    RoomChangedSubscription,
+    RoomChangedSubscriptionVariables
+  >(RoomChangedDocument, baseOptions);
 }
 export const RoomDocument: DocumentNode = {
   kind: "Document",

@@ -5,7 +5,9 @@ import {
   useRoomQuery,
   useEntityChangedSubscription,
   useMoveMutation,
-  Direction
+  Direction,
+  useRoomChangedSubscription,
+  RoomDocument
 } from "../generated/models";
 
 import styles from "./Room.module.css";
@@ -23,6 +25,49 @@ function RoomDisplay() {
   // TODO: subscribe to room instead of query
   const { error, loading, data } = useRoomQuery({
     variables: { id: "default" }
+  });
+
+  useRoomChangedSubscription({
+    variables: { id: "default" },
+    skip: loading || error != null,
+    onSubscriptionData({
+      client,
+      subscriptionData: { data: d, error: e, loading: l }
+    }) {
+      if (l) return;
+      if (e) {
+        console.error(e);
+        return;
+      }
+
+      const { joined, left } = d!.roomChanged;
+      if (joined) {
+        client.writeQuery({
+          query: RoomDocument,
+          variables: { id: "default" },
+          data: {
+            room: {
+              ...data!.room!,
+              entities: data!.room!.entities.concat(joined)
+            }
+          }
+        });
+      }
+      if (left) {
+        client.writeQuery({
+          query: RoomDocument,
+          variables: { id: "default" },
+          data: {
+            room: {
+              ...data!.room!,
+              entities: data!.room!.entities.filter(
+                ent => !left.map(lef => lef.id).includes(ent.id)
+              )
+            }
+          }
+        });
+      }
+    }
   });
 
   if (error) {

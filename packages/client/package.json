@@ -23,6 +23,7 @@
     "graphql": "^14.3.0",
     "graphql-tag": "^2.10.1",
     "mousetrap": "^1.6.3",
+    "randomcolor": "^0.5.4",
     "react": "^16.8.6",
     "react-apollo": "^2.5.5",
     "react-apollo-hooks": "^0.4.5",
@@ -34,6 +35,7 @@
     "@types/graphql": "^14.2.0",
     "@types/mousetrap": "^1.6.2",
     "@types/node": "12.0.2",
+    "@types/randomcolor": "^0.5.2",
     "@types/react": "16.8.17",
     "@types/react-dom": "16.8.4"
   },

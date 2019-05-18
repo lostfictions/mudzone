@@ -1,5 +1,4 @@
-import { gql } from "apollo-server";
-import { withFilter } from "apollo-server";
+import { gql, withFilter } from "apollo-server";
 
 import { withInitialValue } from "../util/with-initial-value";
 import { Resolvers, Entity, Direction, Position } from "../generated/graphql";
@@ -8,7 +7,6 @@ import pubSub from "../pub-sub";
 
 // import { randomName } from "../util/name";
 
-export const ENTITY_JOIN = "ENTITY_JOIN";
 export const ENTITY_MOVE = "ENTITY_MOVE";
 
 export const typeDefs = gql`
@@ -66,12 +64,12 @@ export const resolvers: Resolvers = {
   },
   Mutation: {
     async move(_root, { direction }, context) {
-      const { name: username } = context.userData!;
+      const { id, name: username } = context.userData!;
 
       const { entities } = context.store;
 
       // TODO: not just the player!
-      const entity = await entities.findOne({ id: { $eq: "player" } }).exec();
+      const entity = await entities.findOne({ id: { $eq: id } }).exec();
 
       if (!entity) {
         console.log(`No entity found for username ${username}`);
@@ -146,7 +144,9 @@ export async function canMoveInDirection(
   // incredibly naive hit detection
   const entities: EntityDbObject[] = await room.populate("entities");
   const isBlocked = entities.some(
-    e => e.position.x === targetX && e.position.y === targetY
+    // HACK: shouldn't have to check null here, unless we're getting concurrency
+    // issues? which is possible? debug later
+    e => e && e.position.x === targetX && e.position.y === targetY
   );
 
   return !isBlocked;
