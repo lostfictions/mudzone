@@ -32,14 +32,13 @@ export const withInitialValue = (
       info
     );
 
-    let getNextPromise = (): any =>
-      Promise.resolve(initialValueOrPromise).then(value => {
-        getNextPromise = asyncIterator.next;
-        return {
-          done: false,
-          value
-        };
-      });
+    let getNextPromise = (): any => {
+      getNextPromise = asyncIterator.next;
+      return Promise.resolve(initialValueOrPromise).then(value => ({
+        done: false,
+        value
+      }));
+    };
 
     return {
       next() {
