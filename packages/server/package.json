@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@okgrow/graphql-scalars": "^0.4.5",
-    "apollo-server": "^2.5.0",
+    "apollo-server": "^2.14.2",
     "envalid": "^5.0.0",
     "fs-extra": "^8.0.1",
     "graphql": "^14.3.0",
